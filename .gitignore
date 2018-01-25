@@ -47,3 +47,12 @@ include/
 
 *.Plo
 *.Po
+
+*.lo
+*.la
+*.o
+.libs/
+
+/config.log
+/config.status
+/libtool

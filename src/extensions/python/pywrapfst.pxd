@@ -11,7 +11,7 @@ from libcpp.memory cimport unique_ptr
 from libcpp.utility cimport pair
 from libcpp.vector cimport vector
 
-from google3 cimport string
+from libcpp.string cimport string
 from basictypes cimport int32
 from basictypes cimport int64
 from basictypes cimport uint32
