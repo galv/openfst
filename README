@@ -3,6 +3,14 @@ OpenFst: Release 1.6.5.
 OpenFst is a library for constructing, combining, optimizing, and searching
 weighted finite-state transducers (FSTs).
 
+TL;DR INSTALL:
+
+```
+autoreconf --install
+./configure
+make -j
+```
+
 REQUIREMENTS:
   This version is known to work under Linux using g++ (>= 4.7) and OS X using
   XCode (>= 5). It is expected to work wherever adequate POSIX (dlopen,
