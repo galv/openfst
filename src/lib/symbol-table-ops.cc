@@ -75,18 +75,18 @@ SymbolTable *CompactSymbolTable(const SymbolTable &syms) {
 SymbolTable *FstReadSymbols(const string &filename, bool input_symbols) {
   std::ifstream in(filename, std::ios_base::in | std::ios_base::binary);
   if (!in) {
-    LOG(ERROR) << "FstReadSymbols: Can't open file " << filename;
+    FST_LOG(ERROR) << "FstReadSymbols: Can't open file " << filename;
     return nullptr;
   }
   FstHeader hdr;
   if (!hdr.Read(in, filename)) {
-    LOG(ERROR) << "FstReadSymbols: Couldn't read header from " << filename;
+    FST_LOG(ERROR) << "FstReadSymbols: Couldn't read header from " << filename;
     return nullptr;
   }
   if (hdr.GetFlags() & FstHeader::HAS_ISYMBOLS) {
     std::unique_ptr<SymbolTable> isymbols(SymbolTable::Read(in, filename));
     if (isymbols == nullptr) {
-      LOG(ERROR) << "FstReadSymbols: Couldn't read input symbols from "
+      FST_LOG(ERROR) << "FstReadSymbols: Couldn't read input symbols from "
                  << filename;
       return nullptr;
     }
@@ -95,13 +95,13 @@ SymbolTable *FstReadSymbols(const string &filename, bool input_symbols) {
   if (hdr.GetFlags() & FstHeader::HAS_OSYMBOLS) {
     std::unique_ptr<SymbolTable> osymbols(SymbolTable::Read(in, filename));
     if (osymbols == nullptr) {
-      LOG(ERROR) << "FstReadSymbols: Couldn't read output symbols from "
+      FST_LOG(ERROR) << "FstReadSymbols: Couldn't read output symbols from "
                  << filename;
       return nullptr;
     }
     if (!input_symbols) return osymbols.release();
   }
-  LOG(ERROR) << "FstReadSymbols: The file " << filename
+  FST_LOG(ERROR) << "FstReadSymbols: The file " << filename
              << " doesn't contain the requested symbols";
   return nullptr;
 }

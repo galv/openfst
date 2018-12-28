@@ -38,7 +38,7 @@ int fstminimize_main(int argc, char **argv) {
       (argc > 3 && strcmp(argv[3], "-") != 0) ? argv[3] : "";
 
   if (out1_name.empty() && out2_name.empty() && argc > 3) {
-    LOG(ERROR) << argv[0] << ": Both outputs can't be standard output.";
+    FST_LOG(ERROR) << argv[0] << ": Both outputs can't be standard output.";
     return 1;
   }
 

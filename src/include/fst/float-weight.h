@@ -377,13 +377,13 @@ namespace internal {
 
 // -log(e^-x + e^-y) = x - LogPosExp(y - x), assuming x >= 0.0.
 inline double LogPosExp(double x) {
-  DCHECK(!(x < 0));  // NB: NaN values are allowed.
+  DFST_CHECK(!(x < 0));  // NB: NaN values are allowed.
   return log1p(exp(-x));
 }
 
 // -log(e^-x - e^-y) = x - LogNegExp(y - x), assuming x > 0.0.
 inline double LogNegExp(double x) {
-  DCHECK_GT(x, 0);
+  FST_DCHECK_GT(x, 0);
   return log1p(-exp(-x));
 }
 
@@ -392,7 +392,7 @@ inline double LogNegExp(double x) {
 // independent of the number of addends. Assumes b >= a;
 // c is the compensation.
 inline double KahanLogSum(double a, double b, double *c) {
-  DCHECK_GE(b, a);
+  FST_DCHECK_GE(b, a);
   double y = -LogPosExp(b - a) - *c;
   double t = a + y;
   *c = (t - a) - y;
@@ -404,7 +404,7 @@ inline double KahanLogSum(double a, double b, double *c) {
 // independent of the number of addends. Assumes b > a;
 // c is the compensation.
 inline double KahanLogDiff(double a, double b, double *c) {
-  DCHECK_GT(b, a);
+  FST_DCHECK_GT(b, a);
   double y = -LogNegExp(b - a) - *c;
   double t = a + y;
   *c = (t - a) - y;

@@ -127,7 +127,7 @@ class EncodeTable {
   // Given an encoded arc label, decodes back to input/output labels and costs.
   const Tuple *Decode(Label key) const {
     if (key < 1 || key > encode_tuples_.size()) {
-      LOG(ERROR) << "EncodeTable::Decode: Unknown decode key: " << key;
+      FST_LOG(ERROR) << "EncodeTable::Decode: Unknown decode key: " << key;
       return nullptr;
     }
     return encode_tuples_[key - 1].get();
@@ -192,7 +192,7 @@ bool EncodeTable<Arc>::Write(std::ostream &strm,
   if (flags_ & kEncodeHasOSymbols) osymbols_->Write(strm);
   strm.flush();
   if (!strm) {
-    LOG(ERROR) << "EncodeTable::Write: Write failed: " << source;
+    FST_LOG(ERROR) << "EncodeTable::Write: Write failed: " << source;
     return false;
   }
   return true;
@@ -204,7 +204,7 @@ EncodeTable<Arc> *EncodeTable<Arc>::Read(std::istream &strm,
   int32 magic_number = 0;
   ReadType(strm, &magic_number);
   if (magic_number != kEncodeMagicNumber) {
-    LOG(ERROR) << "EncodeTable::Read: Bad encode table header: " << source;
+    FST_LOG(ERROR) << "EncodeTable::Read: Bad encode table header: " << source;
     return nullptr;
   }
   uint32 flags;
@@ -212,7 +212,7 @@ EncodeTable<Arc> *EncodeTable<Arc>::Read(std::istream &strm,
   int64 size;
   ReadType(strm, &size);
   if (!strm) {
-    LOG(ERROR) << "EncodeTable::Read: Read failed: " << source;
+    FST_LOG(ERROR) << "EncodeTable::Read: Read failed: " << source;
     return nullptr;
   }
   std::unique_ptr<EncodeTable<Arc>> table(new EncodeTable<Arc>(flags));
@@ -222,7 +222,7 @@ EncodeTable<Arc> *EncodeTable<Arc>::Read(std::istream &strm,
     ReadType(strm, &tuple->olabel);
     tuple->weight.Read(strm);
     if (!strm) {
-      LOG(ERROR) << "EncodeTable::Read: Read failed: " << source;
+      FST_LOG(ERROR) << "EncodeTable::Read: Read failed: " << source;
       return nullptr;
     }
     table->encode_tuples_.push_back(std::move(tuple));
@@ -324,7 +324,7 @@ class EncodeMapper {
     std::ofstream strm(filename,
                              std::ios_base::out | std::ios_base::binary);
     if (!strm) {
-      LOG(ERROR) << "EncodeMap: Can't open file: " << filename;
+      FST_LOG(ERROR) << "EncodeMap: Can't open file: " << filename;
       return false;
     }
     return Write(strm, filename);
@@ -341,7 +341,7 @@ class EncodeMapper {
     std::ifstream strm(filename,
                             std::ios_base::in | std::ios_base::binary);
     if (!strm) {
-      LOG(ERROR) << "EncodeMap: Can't open file: " << filename;
+      FST_LOG(ERROR) << "EncodeMap: Can't open file: " << filename;
       return nullptr;
     }
     return Read(strm, filename, type);

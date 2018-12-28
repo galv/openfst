@@ -53,7 +53,7 @@ int fstshortestpath_main(int argc, char **argv) {
 
   fst::QueueType queue_type;
   if (!s::GetQueueType(FLAGS_queue_type, &queue_type)) {
-    LOG(ERROR) << "Unknown or unsupported queue type: " << FLAGS_queue_type;
+    FST_LOG(ERROR) << "Unknown or unsupported queue type: " << FLAGS_queue_type;
     return 1;
   }
 

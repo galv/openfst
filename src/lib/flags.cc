@@ -60,7 +60,7 @@ void SetFlags(const char *usage, int *argc, char ***argv,
     auto double_register = FlagRegister<double>::GetRegister();
     if (double_register->SetFlag(arg, val))
       continue;
-    LOG(FATAL) << "SetFlags: Bad option: " << (*argv)[index];
+    FST_LOG(FATAL) << "SetFlags: Bad option: " << (*argv)[index];
   }
   if (remove_flags) {
     for (auto i = 0; i < *argc - index; ++i) {

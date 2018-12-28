@@ -88,7 +88,7 @@ void TestAdder(int n) {
     sum = Plus(sum, Weight::One());
     adder.Add(Weight::One());
   }
-  CHECK(ApproxEqual(sum, adder.Sum()));
+  FST_CHECK(ApproxEqual(sum, adder.Sum()));
 }
 
 template <class Weight>
@@ -105,7 +105,7 @@ void TestSignedAdder(int n) {
       adder.Add(minus_one);
     }
   }
-  CHECK(ApproxEqual(sum, adder.Sum()));
+  FST_CHECK(ApproxEqual(sum, adder.Sum()));
 }
 
 template <typename Weight1, typename Weight2>
@@ -115,25 +115,25 @@ void TestWeightConversion(Weight1 w1) {
   WeightConvert<Weight1, Weight2> to_w2_;
   Weight2 w2 = to_w2_(w1);
   Weight1 nw1 = to_w1_(w2);
-  CHECK_EQ(w1, nw1);
+  FST_CHECK_EQ(w1, nw1);
 }
 
 template <class Weight>
 void TestImplicitConversion() {
   // Only test a few of the operations; assumes they are implemented with the
   // same pattern.
-  CHECK(Weight(2.0f) == 2.0f);
-  CHECK(Weight(2.0) == 2.0);
-  CHECK(2.0f == Weight(2.0f));
-  CHECK(2.0 == Weight(2.0));
+  FST_CHECK(Weight(2.0f) == 2.0f);
+  FST_CHECK(Weight(2.0) == 2.0);
+  FST_CHECK(2.0f == Weight(2.0f));
+  FST_CHECK(2.0 == Weight(2.0));
 
-  CHECK_EQ(Weight::Zero(), Times(Weight::Zero(), 3.0f));
-  CHECK_EQ(Weight::Zero(), Times(Weight::Zero(), 3.0));
-  CHECK_EQ(Weight::Zero(), Times(3.0, Weight::Zero()));
+  FST_CHECK_EQ(Weight::Zero(), Times(Weight::Zero(), 3.0f));
+  FST_CHECK_EQ(Weight::Zero(), Times(Weight::Zero(), 3.0));
+  FST_CHECK_EQ(Weight::Zero(), Times(3.0, Weight::Zero()));
 
-  CHECK_EQ(Weight(3.0), Plus(Weight::Zero(), 3.0f));
-  CHECK_EQ(Weight(3.0), Plus(Weight::Zero(), 3.0));
-  CHECK_EQ(Weight(3.0), Plus(3.0, Weight::Zero()));
+  FST_CHECK_EQ(Weight(3.0), Plus(Weight::Zero(), 3.0f));
+  FST_CHECK_EQ(Weight(3.0), Plus(Weight::Zero(), 3.0));
+  FST_CHECK_EQ(Weight(3.0), Plus(3.0, Weight::Zero()));
 }
 
 void TestPowerWeightGetSetValue() {
@@ -141,8 +141,8 @@ void TestPowerWeightGetSetValue() {
   // LogWeight has unspecified initial value, so don't check it.
   w.SetValue(0, LogWeight(2));
   w.SetValue(1, LogWeight(3));
-  CHECK_EQ(LogWeight(2), w.Value(0));
-  CHECK_EQ(LogWeight(3), w.Value(1));
+  FST_CHECK_EQ(LogWeight(2), w.Value(0));
+  FST_CHECK_EQ(LogWeight(3), w.Value(1));
 }
 
 void TestSparsePowerWeightGetSetValue() {
@@ -151,65 +151,65 @@ void TestSparsePowerWeightGetSetValue() {
   w.SetDefaultValue(default_value);
 
   // All gets should be the default.
-  CHECK_EQ(default_value, w.Value(0));
-  CHECK_EQ(default_value, w.Value(100));
+  FST_CHECK_EQ(default_value, w.Value(0));
+  FST_CHECK_EQ(default_value, w.Value(100));
 
   // First set should fill first_.
   w.SetValue(10, LogWeight(10));
-  CHECK_EQ(LogWeight(10), w.Value(10));
+  FST_CHECK_EQ(LogWeight(10), w.Value(10));
   w.SetValue(10, LogWeight(20));
-  CHECK_EQ(LogWeight(20), w.Value(10));
+  FST_CHECK_EQ(LogWeight(20), w.Value(10));
 
   // Add a smaller index.
   w.SetValue(5, LogWeight(5));
-  CHECK_EQ(LogWeight(5), w.Value(5));
-  CHECK_EQ(LogWeight(20), w.Value(10));
+  FST_CHECK_EQ(LogWeight(5), w.Value(5));
+  FST_CHECK_EQ(LogWeight(20), w.Value(10));
 
   // Add some larger indices.
   w.SetValue(30, LogWeight(30));
-  CHECK_EQ(LogWeight(5), w.Value(5));
-  CHECK_EQ(LogWeight(20), w.Value(10));
-  CHECK_EQ(LogWeight(30), w.Value(30));
+  FST_CHECK_EQ(LogWeight(5), w.Value(5));
+  FST_CHECK_EQ(LogWeight(20), w.Value(10));
+  FST_CHECK_EQ(LogWeight(30), w.Value(30));
 
   w.SetValue(29, LogWeight(29));
-  CHECK_EQ(LogWeight(5), w.Value(5));
-  CHECK_EQ(LogWeight(20), w.Value(10));
-  CHECK_EQ(LogWeight(29), w.Value(29));
-  CHECK_EQ(LogWeight(30), w.Value(30));
+  FST_CHECK_EQ(LogWeight(5), w.Value(5));
+  FST_CHECK_EQ(LogWeight(20), w.Value(10));
+  FST_CHECK_EQ(LogWeight(29), w.Value(29));
+  FST_CHECK_EQ(LogWeight(30), w.Value(30));
 
   w.SetValue(31, LogWeight(31));
-  CHECK_EQ(LogWeight(5), w.Value(5));
-  CHECK_EQ(LogWeight(20), w.Value(10));
-  CHECK_EQ(LogWeight(29), w.Value(29));
-  CHECK_EQ(LogWeight(30), w.Value(30));
-  CHECK_EQ(LogWeight(31), w.Value(31));
+  FST_CHECK_EQ(LogWeight(5), w.Value(5));
+  FST_CHECK_EQ(LogWeight(20), w.Value(10));
+  FST_CHECK_EQ(LogWeight(29), w.Value(29));
+  FST_CHECK_EQ(LogWeight(30), w.Value(30));
+  FST_CHECK_EQ(LogWeight(31), w.Value(31));
 
   // Replace a value.
   w.SetValue(30, LogWeight(60));
-  CHECK_EQ(LogWeight(60), w.Value(30));
+  FST_CHECK_EQ(LogWeight(60), w.Value(30));
 
   // Replace a value with the default.
-  CHECK_EQ(5, w.Size());
+  FST_CHECK_EQ(5, w.Size());
   w.SetValue(30, default_value);
-  CHECK_EQ(default_value, w.Value(30));
-  CHECK_EQ(4, w.Size());
+  FST_CHECK_EQ(default_value, w.Value(30));
+  FST_CHECK_EQ(4, w.Size());
 
   // Replace lowest index by the default value.
   w.SetValue(5, default_value);
-  CHECK_EQ(default_value, w.Value(5));
-  CHECK_EQ(3, w.Size());
+  FST_CHECK_EQ(default_value, w.Value(5));
+  FST_CHECK_EQ(3, w.Size());
 
   // Clear out everything.
   w.SetValue(31, default_value);
   w.SetValue(29, default_value);
   w.SetValue(10, default_value);
-  CHECK_EQ(0, w.Size());
+  FST_CHECK_EQ(0, w.Size());
 
-  CHECK_EQ(default_value, w.Value(5));
-  CHECK_EQ(default_value, w.Value(10));
-  CHECK_EQ(default_value, w.Value(29));
-  CHECK_EQ(default_value, w.Value(30));
-  CHECK_EQ(default_value, w.Value(31));
+  FST_CHECK_EQ(default_value, w.Value(5));
+  FST_CHECK_EQ(default_value, w.Value(10));
+  FST_CHECK_EQ(default_value, w.Value(29));
+  FST_CHECK_EQ(default_value, w.Value(30));
+  FST_CHECK_EQ(default_value, w.Value(31));
 }
 
 }  // namespace
@@ -218,7 +218,7 @@ int main(int argc, char **argv) {
   std::set_new_handler(FailedNewHandler);
   SET_FLAGS(argv[0], &argc, &argv, true);
 
-  LOG(INFO) << "Seed = " << FLAGS_seed;
+  FST_LOG(INFO) << "Seed = " << FLAGS_seed;
   srand(FLAGS_seed);
 
   TestTemplatedWeights<float>(FLAGS_repeat);
@@ -229,10 +229,10 @@ int main(int argc, char **argv) {
   FLAGS_fst_weight_parentheses = "";
 
   // Makes sure type names for templated weights are consistent.
-  CHECK(TropicalWeight::Type() == "tropical");
-  CHECK(TropicalWeightTpl<double>::Type() != TropicalWeightTpl<float>::Type());
-  CHECK(LogWeight::Type() == "log");
-  CHECK(LogWeightTpl<double>::Type() != LogWeightTpl<float>::Type());
+  FST_CHECK(TropicalWeight::Type() == "tropical");
+  FST_CHECK(TropicalWeightTpl<double>::Type() != TropicalWeightTpl<float>::Type());
+  FST_CHECK(LogWeight::Type() == "log");
+  FST_CHECK(LogWeightTpl<double>::Type() != LogWeightTpl<float>::Type());
   TropicalWeightTpl<double> w(2.0);
   TropicalWeight tw(2.0);
 

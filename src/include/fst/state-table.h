@@ -333,7 +333,7 @@ class ComposeFingerprint {
 
   // Required but suboptimal constructor.
   ComposeFingerprint() : mult1_(8192), mult2_(8192) {
-    LOG(WARNING) << "TupleFingerprint: # of FST states should be provided.";
+    FST_LOG(WARNING) << "TupleFingerprint: # of FST states should be provided.";
   }
 
   // Constructor is provided the sizes of the input FSTs.

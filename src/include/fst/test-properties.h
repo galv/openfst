@@ -39,7 +39,7 @@ inline bool CompatProperties(uint64 props1, uint64 props2) {
     uint64 prop = 1;
     for (int i = 0; i < 64; ++i, prop <<= 1) {
       if (prop & incompat_props) {
-        LOG(ERROR) << "CompatProperties: Mismatch: " << PropertyNames[i]
+        FST_LOG(ERROR) << "CompatProperties: Mismatch: " << PropertyNames[i]
                    << ": props1 = " << (props1 & prop ? "true" : "false")
                    << ", props2 = " << (props2 & prop ? "true" : "false");
       }

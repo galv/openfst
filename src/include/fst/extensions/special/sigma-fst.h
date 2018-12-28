@@ -53,7 +53,7 @@ class SigmaFstMatcherData {
     if (mode == "auto") return MATCHER_REWRITE_AUTO;
     if (mode == "always") return MATCHER_REWRITE_ALWAYS;
     if (mode == "never") return MATCHER_REWRITE_NEVER;
-    LOG(WARNING) << "SigmaFst: Unknown rewrite mode: " << mode << ". "
+    FST_LOG(WARNING) << "SigmaFst: Unknown rewrite mode: " << mode << ". "
                  << "Defaulting to auto.";
     return MATCHER_REWRITE_AUTO;
   }

@@ -246,7 +246,7 @@ class SymbolTable {
       const SymbolTableTextOptions &opts = SymbolTableTextOptions()) {
     std::ifstream strm(filename, std::ios_base::in);
     if (!strm.good()) {
-      LOG(ERROR) << "SymbolTable::ReadText: Can't open file " << filename;
+      FST_LOG(ERROR) << "SymbolTable::ReadText: Can't open file " << filename;
       return nullptr;
     }
     return ReadText(strm, filename, opts);
@@ -273,7 +273,7 @@ class SymbolTable {
     std::ifstream strm(filename,
                             std::ios_base::in | std::ios_base::binary);
     if (!strm.good()) {
-      LOG(ERROR) << "SymbolTable::Read: Can't open file " << filename;
+      FST_LOG(ERROR) << "SymbolTable::Read: Can't open file " << filename;
       return nullptr;
     }
     return Read(strm, filename);
@@ -333,7 +333,7 @@ class SymbolTable {
     std::ofstream strm(filename,
                              std::ios_base::out | std::ios_base::binary);
     if (!strm.good()) {
-      LOG(ERROR) << "SymbolTable::Write: Can't open file " << filename;
+      FST_LOG(ERROR) << "SymbolTable::Write: Can't open file " << filename;
       return false;
     }
     return Write(strm);
@@ -347,7 +347,7 @@ class SymbolTable {
   bool WriteText(const string &filename) const {
     std::ofstream strm(filename);
     if (!strm.good()) {
-      LOG(ERROR) << "SymbolTable::WriteText: Can't open file " << filename;
+      FST_LOG(ERROR) << "SymbolTable::WriteText: Can't open file " << filename;
       return false;
     }
     return WriteText(strm);

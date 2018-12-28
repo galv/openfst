@@ -150,9 +150,9 @@ void LinearFstData<A>::TakeTransition(Iterator buffer_end,
                                       Iterator trie_state_end, Label ilabel,
                                       Label olabel, std::vector<Label> *next,
                                       Weight *weight) const {
-  DCHECK_EQ(trie_state_end - trie_state_begin, groups_.size());
-  DCHECK(ilabel > 0 || ilabel == kEndOfSentence);
-  DCHECK(olabel > 0 || olabel == kStartOfSentence);
+  FST_DCHECK_EQ(trie_state_end - trie_state_begin, groups_.size());
+  DFST_CHECK(ilabel > 0 || ilabel == kEndOfSentence);
+  DFST_CHECK(olabel > 0 || olabel == kStartOfSentence);
   size_t group_id = 0;
   for (Iterator it = trie_state_begin; it != trie_state_end; ++it, ++group_id) {
     size_t delay = groups_[group_id]->Delay();
@@ -177,7 +177,7 @@ template <class A>
 template <class Iterator>
 inline typename A::Weight LinearFstData<A>::FinalWeight(
     Iterator trie_state_begin, Iterator trie_state_end) const {
-  DCHECK_EQ(trie_state_end - trie_state_begin, groups_.size());
+  FST_DCHECK_EQ(trie_state_end - trie_state_begin, groups_.size());
   size_t group_id = 0;
   Weight accum = Weight::One();
   for (Iterator it = trie_state_begin; it != trie_state_end; ++it, ++group_id)
@@ -242,7 +242,7 @@ inline std::ostream &LinearFstData<A>::Write(
 template <class A>
 typename A::Label LinearFstData<A>::FindFeature(size_t group,
                                                 Label word) const {
-  DCHECK(word > 0 || word == kStartOfSentence || word == kEndOfSentence);
+  DFST_CHECK(word > 0 || word == kStartOfSentence || word == kEndOfSentence);
   if (word == kStartOfSentence || word == kEndOfSentence)
     return word;
   else
@@ -432,7 +432,7 @@ int FeatureGroup<A>::Walk(int cur, Label ilabel, Label olabel,
     // the input, when this feature group is delayed (i.e. there is
     // another feature group with a larger future size). The actual
     // input hasn't arrived so stay at the start state.
-    DCHECK_EQ(cur, start_);
+    FST_DCHECK_EQ(cur, start_);
     next = start_;
   } else {
     // First, try exact match

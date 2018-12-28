@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
   bool result = s::FarEqual(argv[1], argv[2], arc_type, FLAGS_delta,
                             FLAGS_begin_key, FLAGS_end_key);
 
-  if (!result) VLOG(1) << "FARs are not equal.";
+  if (!result) VFST_LOG(1) << "FARs are not equal.";
 
   return result ? 0 : 2;
 }

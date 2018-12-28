@@ -33,7 +33,7 @@ int fstconcat_main(int argc, char **argv) {
   const string out_name = argc > 3 ? argv[3] : "";
 
   if (in1_name.empty() && in2_name.empty()) {
-    LOG(ERROR) << argv[0] << ": Can't take both inputs from standard input";
+    FST_LOG(ERROR) << argv[0] << ": Can't take both inputs from standard input";
     return 1;
   }
 

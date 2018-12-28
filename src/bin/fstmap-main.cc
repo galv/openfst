@@ -41,7 +41,7 @@ int fstmap_main(int argc, char **argv) {
 
   s::MapType map_type;
   if (!s::GetMapType(FLAGS_map_type, &map_type)) {
-    LOG(ERROR) << argv[0] << ": Unknown or unsupported map type "
+    FST_LOG(ERROR) << argv[0] << ": Unknown or unsupported map type "
                << FLAGS_map_type;
     return 1;
   }

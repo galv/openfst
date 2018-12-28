@@ -447,7 +447,7 @@ bool ReplaceUtil<Arc>::GetTopOrder(const Fst<Arc> &fst,
   TopOrderVisitor<Arc> top_order_visitor(&order, &acyclic);
   DfsVisit(fst, &top_order_visitor);
   if (!acyclic) {
-    LOG(WARNING) << "ReplaceUtil::GetTopOrder: Cyclical label dependencies";
+    FST_LOG(WARNING) << "ReplaceUtil::GetTopOrder: Cyclical label dependencies";
     return false;
   }
   toporder->resize(order.size());

@@ -69,7 +69,7 @@ void FarExtract(const std::vector<string> &ifilenames, int32 generate_filenames,
       SplitToVector(key_cstr, range_delimiter.c_str(), &range_vector, false);
       if (range_vector.size() == 1) {  // Not a range
         if (!far_reader->Find(key)) {
-          LOG(ERROR) << "FarExtract: Cannot find key " << key;
+          FST_LOG(ERROR) << "FarExtract: Cannot find key " << key;
           return;
         }
         const auto *fst = far_reader->GetFst();
@@ -79,11 +79,11 @@ void FarExtract(const std::vector<string> &ifilenames, int32 generate_filenames,
         string begin_key = range_vector[0];
         string end_key = range_vector[1];
         if (begin_key.empty() || end_key.empty()) {
-          LOG(ERROR) << "FarExtract: Illegal range specification " << key;
+          FST_LOG(ERROR) << "FarExtract: Illegal range specification " << key;
           return;
         }
         if (!far_reader->Find(begin_key)) {
-          LOG(ERROR) << "FarExtract: Cannot find key " << begin_key;
+          FST_LOG(ERROR) << "FarExtract: Cannot find key " << begin_key;
           return;
         }
         for (; !far_reader->Done(); far_reader->Next(), ++i) {
@@ -94,7 +94,7 @@ void FarExtract(const std::vector<string> &ifilenames, int32 generate_filenames,
                       filename_prefix, filename_suffix);
         }
       } else {
-        LOG(ERROR) << "FarExtract: Illegal range specification " << key;
+        FST_LOG(ERROR) << "FarExtract: Illegal range specification " << key;
         return;
       }
       delete[] key_cstr;

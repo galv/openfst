@@ -39,7 +39,7 @@ int fstdifference_main(int argc, char **argv) {
   const string out_name = argc > 3 ? argv[3] : "";
 
   if (in1_name.empty() && in2_name.empty()) {
-    LOG(ERROR) << argv[0] << ": Can't take both inputs from standard input";
+    FST_LOG(ERROR) << argv[0] << ": Can't take both inputs from standard input";
     return 1;
   }
 
@@ -53,7 +53,7 @@ int fstdifference_main(int argc, char **argv) {
 
   ComposeFilter compose_filter;
   if (!s::GetComposeFilter(FLAGS_compose_filter, &compose_filter)) {
-    LOG(ERROR) << argv[0] << ": Unknown or unsupported compose filter type: "
+    FST_LOG(ERROR) << argv[0] << ": Unknown or unsupported compose filter type: "
                << FLAGS_compose_filter;
     return 1;
   }

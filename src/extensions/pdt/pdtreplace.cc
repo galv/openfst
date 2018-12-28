@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
 
   PdtParserType parser_type;
   if (!s::GetPdtParserType(FLAGS_pdt_parser_type, &parser_type)) {
-    LOG(ERROR) << argv[0] << ": Unknown PDT parser type: "
+    FST_LOG(ERROR) << argv[0] << ": Unknown PDT parser type: "
                << FLAGS_pdt_parser_type;
     delete ifst;
     return 1;

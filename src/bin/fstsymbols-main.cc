@@ -57,7 +57,7 @@ int fstsymbols_main(int argc, char **argv) {
     if (isyms) {
       isyms->WriteText(FLAGS_save_isymbols);
     } else {
-      LOG(ERROR) << argv[0]
+      FST_LOG(ERROR) << argv[0]
                  << ": Saving isymbols but there are no input symbols.";
     }
   }
@@ -67,7 +67,7 @@ int fstsymbols_main(int argc, char **argv) {
     if (osyms) {
       osyms->WriteText(FLAGS_save_osymbols);
     } else {
-      LOG(ERROR) << argv[0]
+      FST_LOG(ERROR) << argv[0]
                  << ": Saving osymbols but there are no output symbols.";
     }
   }

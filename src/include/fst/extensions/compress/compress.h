@@ -43,7 +43,7 @@ bool ExpandLZCode(const std::vector<std::pair<Var, Edge>> &code,
   expanded_code->resize(code.size());
   for (int i = 0; i < code.size(); ++i) {
     if (code[i].first > i) {
-      LOG(ERROR) << "ExpandLZCode: Not a valid code";
+      FST_LOG(ERROR) << "ExpandLZCode: Not a valid code";
       return false;
     }
     if (code[i].first == 0) {
@@ -88,7 +88,7 @@ class LempelZiv {
   // if the index exceeds the size.
   bool SingleDecode(const Var &index, Edge *output) {
     if (index >= decode_vector_.size()) {
-      LOG(ERROR) << "LempelZiv::SingleDecode: "
+      FST_LOG(ERROR) << "LempelZiv::SingleDecode: "
                  << "Index exceeded the dictionary size";
       return false;
     } else {
@@ -176,7 +176,7 @@ bool LempelZiv<Var, Edge, EdgeLessThan, EdgeEquals>::BatchDecode(
     }
     Var temp_integer = it->first;
     if (temp_integer >= decode_vector_.size()) {
-      LOG(ERROR) << "LempelZiv::BatchDecode: "
+      FST_LOG(ERROR) << "LempelZiv::BatchDecode: "
                  << "Index exceeded the dictionary size";
       return false;
     } else {
@@ -718,12 +718,12 @@ bool Compressor<Arc>::Decompress(std::istream &strm, const string &source,
   int32 magic_number = 0;
   ReadType(strm, &magic_number);
   if (magic_number != kCompressMagicNumber) {
-    LOG(ERROR) << "Decompress: Bad compressed Fst: " << source;
+    FST_LOG(ERROR) << "Decompress: Bad compressed Fst: " << source;
     // If the most significant two bytes of the magic number match the
     // gzip magic number, then we are probably reading a gzip file as an
     // ordinary stream.
     if ((magic_number & kGzipMask) == kGzipMagicNumber) {
-      LOG(ERROR) << "Decompress: Fst appears to be compressed with Gzip, but "
+      FST_LOG(ERROR) << "Decompress: Fst appears to be compressed with Gzip, but "
                     "gzip decompression was not requested. Try with "
                     "the --gzip flag"
                     ".";
@@ -823,7 +823,7 @@ bool Compress(const Fst<Arc> &fst, const string &file_name,
       OGzFile gzfile(fileno(stdout));
       gzfile.write(strm);
       if (!gzfile) {
-        LOG(ERROR) << "Compress: Can't write to file: stdout";
+        FST_LOG(ERROR) << "Compress: Can't write to file: stdout";
         return false;
       }
     } else {
@@ -831,12 +831,12 @@ bool Compress(const Fst<Arc> &fst, const string &file_name,
       Compress(fst, strm);
       OGzFile gzfile(file_name);
       if (!gzfile) {
-        LOG(ERROR) << "Compress: Can't open file: " << file_name;
+        FST_LOG(ERROR) << "Compress: Can't open file: " << file_name;
         return false;
       }
       gzfile.write(strm);
       if (!gzfile) {
-        LOG(ERROR) << "Compress: Can't write to file: " << file_name;
+        FST_LOG(ERROR) << "Compress: Can't write to file: " << file_name;
         return false;
       }
     }
@@ -846,7 +846,7 @@ bool Compress(const Fst<Arc> &fst, const string &file_name,
     std::ofstream strm(file_name,
                              std::ios_base::out | std::ios_base::binary);
     if (!strm) {
-      LOG(ERROR) << "Compress: Can't open file: " << file_name;
+      FST_LOG(ERROR) << "Compress: Can't open file: " << file_name;
       return false;
     }
     Compress(fst, strm);
@@ -870,18 +870,18 @@ bool Decompress(const string &file_name, MutableFst<Arc> *fst,
       IGzFile gzfile(fileno(stdin));
       Decompress(*gzfile.read(), "stdin", fst);
       if (!gzfile) {
-        LOG(ERROR) << "Decompress: Can't read from file: stdin";
+        FST_LOG(ERROR) << "Decompress: Can't read from file: stdin";
         return false;
       }
     } else {
       IGzFile gzfile(file_name);
       if (!gzfile) {
-        LOG(ERROR) << "Decompress: Can't open file: " << file_name;
+        FST_LOG(ERROR) << "Decompress: Can't open file: " << file_name;
         return false;
       }
       Decompress(*gzfile.read(), file_name, fst);
       if (!gzfile) {
-        LOG(ERROR) << "Decompress: Can't read from file: " << file_name;
+        FST_LOG(ERROR) << "Decompress: Can't read from file: " << file_name;
         return false;
       }
     }
@@ -891,7 +891,7 @@ bool Decompress(const string &file_name, MutableFst<Arc> *fst,
     std::ifstream strm(file_name,
                             std::ios_base::in | std::ios_base::binary);
     if (!strm) {
-      LOG(ERROR) << "Decompress: Can't open file: " << file_name;
+      FST_LOG(ERROR) << "Decompress: Can't open file: " << file_name;
       return false;
     }
     Decompress(strm, file_name, fst);

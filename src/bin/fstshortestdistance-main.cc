@@ -48,13 +48,13 @@ int fstshortestdistance_main(int argc, char **argv) {
 
   QueueType queue_type;
   if (!s::GetQueueType(FLAGS_queue_type, &queue_type)) {
-    LOG(ERROR) << argv[0]
+    FST_LOG(ERROR) << argv[0]
                << ": Unknown or unsupported queue type: " << FLAGS_queue_type;
     return 1;
   }
 
   if (FLAGS_reverse && queue_type != AUTO_QUEUE) {
-    LOG(ERROR) << argv[0] << ": Can't use non-default queue with reverse";
+    FST_LOG(ERROR) << argv[0] << ": Can't use non-default queue with reverse";
     return 1;
   }
 

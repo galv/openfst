@@ -45,7 +45,7 @@ void FarPrintStrings(const std::vector<string> &ifilenames,
     const SymbolTableTextOptions opts(true);
     syms.reset(SymbolTable::ReadText(symbols_fname, opts));
     if (!syms) {
-      LOG(ERROR) << "FarPrintStrings: Error reading symbol table "
+      FST_LOG(ERROR) << "FarPrintStrings: Error reading symbol table "
                  << symbols_fname;
       return;
     }
@@ -68,7 +68,7 @@ void FarPrintStrings(const std::vector<string> &ifilenames,
     if (i == 1 && initial_symbols && !syms && fst->InputSymbols())
       syms.reset(fst->InputSymbols()->Copy());
     string str;
-    VLOG(2) << "Handling key: " << key;
+    VFST_LOG(2) << "Handling key: " << key;
     StringPrinter<Arc> string_printer(token_type,
                                       syms ? syms.get() : fst->InputSymbols());
     string_printer(*fst, &str);
@@ -91,7 +91,7 @@ void FarPrintStrings(const std::vector<string> &ifilenames,
       filename = filename_prefix + sstrm.str() + filename_suffix;
       std::ofstream ostrm(filename);
       if (!ostrm) {
-        LOG(ERROR) << "FarPrintStrings: Can't open file: " << filename;
+        FST_LOG(ERROR) << "FarPrintStrings: Can't open file: " << filename;
         return;
       }
       ostrm << str;

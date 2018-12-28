@@ -33,7 +33,7 @@ int fstequal_main(int argc, char **argv) {
   const string in2_name = strcmp(argv[2], "-") == 0 ? "" : argv[2];
 
   if (in1_name.empty() && in2_name.empty()) {
-    LOG(ERROR) << argv[0] << ": Can't take both inputs from standard input";
+    FST_LOG(ERROR) << argv[0] << ": Can't take both inputs from standard input";
     return 1;
   }
 
@@ -44,7 +44,7 @@ int fstequal_main(int argc, char **argv) {
   if (!ifst2) return 1;
 
   bool result = s::Equal(*ifst1, *ifst2, FLAGS_delta);
-  if (!result) VLOG(1) << "FSTs are not equal.";
+  if (!result) VFST_LOG(1) << "FSTs are not equal.";
 
   return result ? 0 : 2;
 }

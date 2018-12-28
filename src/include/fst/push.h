@@ -145,7 +145,7 @@ void Push(const Fst<Arc> &ifst, MutableFst<Arc> *ofst, uint32 ptype,
     ArcMap(fwfst, ofst, FromGallicMapper<Arc, gtype>());
     ofst->SetOutputSymbols(ifst.OutputSymbols());
   } else {
-    LOG(WARNING) << "Push: pushing type is set to 0, so not pushing";
+    FST_LOG(WARNING) << "Push: pushing type is set to 0, so not pushing";
     *ofst = ifst;
   }
 }

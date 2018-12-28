@@ -149,7 +149,7 @@ class LinearTaggerFstImpl : public CacheImpl<A> {
     WriteHeader(strm, opts, kFileVersion, &header);
     data_->Write(strm);
     if (!strm) {
-      LOG(ERROR) << "LinearTaggerFst::Write: Write failed: " << opts.source;
+      FST_LOG(ERROR) << "LinearTaggerFst::Write: Write failed: " << opts.source;
       return false;
     }
     return true;
@@ -291,9 +291,9 @@ template <class A>
 inline typename A::Label LinearTaggerFstImpl<A>::ShiftBuffer(
     const std::vector<Label> &state, Label ilabel,
     std::vector<Label> *next_stub_) {
-  DCHECK(ilabel > 0 || ilabel == LinearFstData<A>::kEndOfSentence);
+  DFST_CHECK(ilabel > 0 || ilabel == LinearFstData<A>::kEndOfSentence);
   if (delay_ == 0) {
-    DCHECK_GT(ilabel, 0);
+    FST_DCHECK_GT(ilabel, 0);
     return ilabel;
   } else {
     (*next_stub_)[BufferEnd(*next_stub_) - next_stub_->begin() - 1] = ilabel;
@@ -305,8 +305,8 @@ template <class A>
 inline A LinearTaggerFstImpl<A>::MakeArc(const std::vector<Label> &state,
                                          Label ilabel, Label olabel,
                                          std::vector<Label> *next_stub_) {
-  DCHECK(ilabel > 0 || ilabel == LinearFstData<A>::kEndOfSentence);
-  DCHECK(olabel > 0 || olabel == LinearFstData<A>::kStartOfSentence);
+  DFST_CHECK(ilabel > 0 || ilabel == LinearFstData<A>::kEndOfSentence);
+  DFST_CHECK(olabel > 0 || olabel == LinearFstData<A>::kStartOfSentence);
   Weight weight(Weight::One());
   data_->TakeTransition(BufferEnd(state), InternalBegin(state),
                         InternalEnd(state), ilabel, olabel, next_stub_,
@@ -372,7 +372,7 @@ inline void LinearTaggerFstImpl<A>::AppendArcs(StateId /*s*/,
 
 template <class A>
 void LinearTaggerFstImpl<A>::Expand(StateId s) {
-  VLOG(3) << "Expand " << s;
+  VFST_LOG(3) << "Expand " << s;
   state_stub_.clear();
   FillState(s, &state_stub_);
 
@@ -471,7 +471,7 @@ class LinearTaggerFst : public ImplToFst<internal::LinearTaggerFstImpl<A>> {
 
   explicit LinearTaggerFst(const Fst<A> &fst)
       : ImplToFst<Impl>(std::make_shared<Impl>()) {
-    LOG(FATAL) << "LinearTaggerFst: no constructor from arbitrary FST.";
+    FST_LOG(FATAL) << "LinearTaggerFst: no constructor from arbitrary FST.";
   }
 
   // See Fst<>::Copy() for doc.
@@ -498,7 +498,7 @@ class LinearTaggerFst : public ImplToFst<internal::LinearTaggerFstImpl<A>> {
       std::ifstream strm(filename,
                               std::ios_base::in | std::ios_base::binary);
       if (!strm) {
-        LOG(ERROR) << "LinearTaggerFst::Read: Can't open file: " << filename;
+        FST_LOG(ERROR) << "LinearTaggerFst::Read: Can't open file: " << filename;
         return nullptr;
       }
       return Read(strm, FstReadOptions(filename));
@@ -518,7 +518,7 @@ class LinearTaggerFst : public ImplToFst<internal::LinearTaggerFstImpl<A>> {
       std::ofstream strm(filename,
                                std::ios_base::out | std::ios_base::binary);
       if (!strm) {
-        LOG(ERROR) << "LinearTaggerFst::Write: Can't open file: " << filename;
+        FST_LOG(ERROR) << "LinearTaggerFst::Write: Can't open file: " << filename;
         return false;
       }
       return Write(strm, FstWriteOptions(filename));
@@ -689,7 +689,7 @@ class LinearClassifierFstImpl : public CacheImpl<A> {
     data_->Write(strm);
     WriteType(strm, num_classes_);
     if (!strm) {
-      LOG(ERROR) << "LinearClassifierFst::Write: Write failed: " << opts.source;
+      FST_LOG(ERROR) << "LinearClassifierFst::Write: Write failed: " << opts.source;
       return false;
     }
     return true;
@@ -753,8 +753,8 @@ class LinearClassifierFstImpl : public CacheImpl<A> {
       return Weight::Zero();
     }
     Label pred = Prediction(state);
-    DCHECK_GT(pred, 0);
-    DCHECK_LE(pred, num_classes_);
+    FST_DCHECK_GT(pred, 0);
+    FST_DCHECK_LE(pred, num_classes_);
     Weight final_weight = Weight::One();
     for (size_t group = 0; group < num_groups_; ++group) {
       int group_id = GroupId(pred, group);
@@ -806,7 +806,7 @@ const int LinearClassifierFstImpl<A>::kFileVersion = 0;
 
 template <class A>
 void LinearClassifierFstImpl<A>::Expand(StateId s) {
-  VLOG(3) << "Expand " << s;
+  VFST_LOG(3) << "Expand " << s;
   state_stub_.clear();
   FillState(s, &state_stub_);
   next_stub_.clear();
@@ -822,8 +822,8 @@ void LinearClassifierFstImpl<A>::Expand(StateId s) {
     }
   } else {
     Label pred = Prediction(state_stub_);
-    DCHECK_GT(pred, 0);
-    DCHECK_LE(pred, num_classes_);
+    FST_DCHECK_GT(pred, 0);
+    FST_DCHECK_LE(pred, num_classes_);
     for (Label ilabel = data_->MinInputLabel();
          ilabel <= data_->MaxInputLabel(); ++ilabel) {
       Prediction(next_stub_) = pred;
@@ -928,7 +928,7 @@ class LinearClassifierFst
 
   explicit LinearClassifierFst(const Fst<A> &fst)
       : ImplToFst<Impl>(std::make_shared<Impl>()) {
-    LOG(FATAL) << "LinearClassifierFst: no constructor from arbitrary FST.";
+    FST_LOG(FATAL) << "LinearClassifierFst: no constructor from arbitrary FST.";
   }
 
   // See Fst<>::Copy() for doc.
@@ -955,7 +955,7 @@ class LinearClassifierFst
       std::ifstream strm(filename,
                               std::ios_base::in | std::ios_base::binary);
       if (!strm) {
-        LOG(ERROR) << "LinearClassifierFst::Read: Can't open file: "
+        FST_LOG(ERROR) << "LinearClassifierFst::Read: Can't open file: "
                    << filename;
         return nullptr;
       }
@@ -977,7 +977,7 @@ class LinearClassifierFst
       std::ofstream strm(filename,
                                std::ios_base::out | std::ios_base::binary);
       if (!strm) {
-        LOG(ERROR) << "ProdLmFst::Write: Can't open file: " << filename;
+        FST_LOG(ERROR) << "ProdLmFst::Write: Can't open file: " << filename;
         return false;
       }
       return Write(strm, FstWriteOptions(filename));

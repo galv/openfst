@@ -32,7 +32,7 @@
 DECLARE_bool(fst_error_fatal);
 
 #define FSTERROR() \
-  (FLAGS_fst_error_fatal ? LOG(FATAL) : LOG(ERROR))
+  (FLAGS_fst_error_fatal ? FST_LOG(FATAL) : FST_LOG(ERROR))
 
 namespace fst {
 
@@ -273,7 +273,7 @@ bool ReadIntPairs(const string &filename, std::vector<std::pair<I, I>> *pairs,
                   bool allow_negative = false) {
   std::ifstream strm(filename, std::ios_base::in);
   if (!strm) {
-    LOG(ERROR) << "ReadIntPairs: Can't open file: " << filename;
+    FST_LOG(ERROR) << "ReadIntPairs: Can't open file: " << filename;
     return false;
   }
   const int kLineLen = 8096;
@@ -287,7 +287,7 @@ bool ReadIntPairs(const string &filename, std::vector<std::pair<I, I>> *pairs,
     // empty line or comment?
     if (col.empty() || col[0][0] == '\0' || col[0][0] == '#') continue;
     if (col.size() != 2) {
-      LOG(ERROR) << "ReadIntPairs: Bad number of columns, "
+      FST_LOG(ERROR) << "ReadIntPairs: Bad number of columns, "
                  << "file = " << filename << ", line = " << nline;
       return false;
     }
@@ -308,7 +308,7 @@ bool WriteIntPairs(const string &filename,
   if (!filename.empty()) {
     strm = new std::ofstream(filename);
     if (!*strm) {
-      LOG(ERROR) << "WriteIntPairs: Can't open file: " << filename;
+      FST_LOG(ERROR) << "WriteIntPairs: Can't open file: " << filename;
       return false;
     }
   }
@@ -316,7 +316,7 @@ bool WriteIntPairs(const string &filename,
     *strm << pairs[n].first << "\t" << pairs[n].second << "\n";
   }
   if (!*strm) {
-    LOG(ERROR) << "WriteIntPairs: Write failed: "
+    FST_LOG(ERROR) << "WriteIntPairs: Write failed: "
                << (filename.empty() ? "standard output" : filename);
     return false;
   }

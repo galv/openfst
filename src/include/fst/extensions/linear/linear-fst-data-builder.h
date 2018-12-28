@@ -336,7 +336,7 @@ bool LinearFstDataBuilder<A>::AddWord(Label word,
   }
   if (word == LinearFstData<A>::kStartOfSentence ||
       word == LinearFstData<A>::kEndOfSentence) {
-    LOG(WARNING) << "Ignored: adding boundary label: "
+    FST_LOG(WARNING) << "Ignored: adding boundary label: "
                  << TranslateLabel(word, isyms_)
                  << "(start-of-sentence=" << LinearFstData<A>::kStartOfSentence
                  << ", end-of-sentence=" << LinearFstData<A>::kEndOfSentence
@@ -391,7 +391,7 @@ bool LinearFstDataBuilder<A>::AddWord(
     Label output = possible_output[i];
     if (output == LinearFstData<A>::kStartOfSentence ||
         output == LinearFstData<A>::kEndOfSentence) {
-      LOG(WARNING) << "Ignored: word = " << TranslateLabel(word, isyms_)
+      FST_LOG(WARNING) << "Ignored: word = " << TranslateLabel(word, isyms_)
                    << ": adding boundary label as possible output: " << output
                    << "(start-of-sentence="
                    << LinearFstData<A>::kStartOfSentence
@@ -443,15 +443,15 @@ bool LinearFstDataBuilder<A>::AddWeight(size_t group,
         end_in_middle = true;
     }
     if (start_in_middle) {
-      LOG(WARNING) << "Ignored: start-of-sentence in the middle of the input!";
-      LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
-      LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
+      FST_LOG(WARNING) << "Ignored: start-of-sentence in the middle of the input!";
+      FST_LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
+      FST_LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
       return false;
     }
     if (end_in_middle) {
-      LOG(WARNING) << "Ignored: end-of-sentence in the middle of the input!";
-      LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
-      LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
+      FST_LOG(WARNING) << "Ignored: end-of-sentence in the middle of the input!";
+      FST_LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
+      FST_LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
       return false;
     }
   }
@@ -465,17 +465,17 @@ bool LinearFstDataBuilder<A>::AddWeight(size_t group,
         non_last_end = true;
     }
     if (non_first_start) {
-      LOG(WARNING) << "Ignored: start-of-sentence not appearing "
+      FST_LOG(WARNING) << "Ignored: start-of-sentence not appearing "
                    << "as the first label in the output!";
-      LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
-      LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
+      FST_LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
+      FST_LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
       return false;
     }
     if (non_last_end) {
-      LOG(WARNING) << "Ignored: end-of-sentence not appearing "
+      FST_LOG(WARNING) << "Ignored: end-of-sentence not appearing "
                    << "as the last label in the output!";
-      LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
-      LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
+      FST_LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
+      FST_LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
       return false;
     }
   }
@@ -536,7 +536,7 @@ LinearFstData<A> *LinearFstDataBuilder<A>::Dump() {
     }
     data->groups_[group].reset(new_group);
     groups_[group].reset();
-    VLOG(1) << "Group " << group << ": " << new_group->Stats();
+    VFST_LOG(1) << "Group " << group << ": " << new_group->Stats();
   }
 
   // Per-group feature mapping
@@ -689,54 +689,54 @@ bool FeatureGroupBuilder<A>::AddWeight(const std::vector<Label> &input,
        i >= 0 && output[i] == LinearFstData<A>::kEndOfSentence; --i)
     ++num_output_end;
 
-  DCHECK_LE(num_output_end, 1);
+  FST_DCHECK_LE(num_output_end, 1);
 
   if (input.size() - num_input_start < future_size_) {
-    LOG(WARNING) << "Ignored: start-of-sentence in the future!";
-    LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
-    LOG(WARNING) << "\tOutput: " << JoinLabels(output, fsyms_);
+    FST_LOG(WARNING) << "Ignored: start-of-sentence in the future!";
+    FST_LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
+    FST_LOG(WARNING) << "\tOutput: " << JoinLabels(output, fsyms_);
     return false;
   }
   if (num_input_start > 0 &&
       input.size() - future_size_ - num_input_start <
           output.size() - num_output_start) {
-    LOG(WARNING) << "Ignored: matching start-of-sentence with actual output!";
-    LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
-    LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
+    FST_LOG(WARNING) << "Ignored: matching start-of-sentence with actual output!";
+    FST_LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
+    FST_LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
     return false;
   }
   if (num_output_start > 0 &&
       input.size() - future_size_ - num_input_start >
           output.size() - num_output_start) {
-    LOG(WARNING) << "Ignored: matching start-of-sentence with actual input!";
-    LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
-    LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
+    FST_LOG(WARNING) << "Ignored: matching start-of-sentence with actual input!";
+    FST_LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
+    FST_LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
     return false;
   }
   // The following two require `num_output_end` <= 1.
   if (num_input_end > future_size_ && num_input_end - future_size_ != 1) {
-    LOG(WARNING) << "Ignored: matching end-of-sentence with actual output!";
-    LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
-    LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
+    FST_LOG(WARNING) << "Ignored: matching end-of-sentence with actual output!";
+    FST_LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
+    FST_LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
     return false;
   }
   if (num_output_end > 0 &&
       ((input.size() == future_size_ && future_size_ != num_input_end) ||
        (input.size() > future_size_ &&
         num_input_end != future_size_ + num_output_end))) {
-    LOG(WARNING) << "Ignored: matching end-of-sentence with actual input!";
-    LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
-    LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
+    FST_LOG(WARNING) << "Ignored: matching end-of-sentence with actual input!";
+    FST_LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
+    FST_LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
     return false;
   }
   // Check if the context has no other labels than boundary marks
   // (such features are useless).
   if (num_input_start + num_input_end == input.size() &&
       num_output_start + num_output_end == output.size()) {
-    LOG(WARNING)
+    FST_LOG(WARNING)
         << "Ignored: feature context consisting of only boundary marks!";
-    LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
-    LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
+    FST_LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
+    FST_LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
     return false;
   }
 
@@ -773,7 +773,7 @@ bool FeatureGroupBuilder<A>::AddWeight(const std::vector<Label> &input,
          --pad, ++opos)
       cur = trie_.Insert(cur, InputOutputLabel(kNoLabel, output[opos]));
   }
-  CHECK_EQ(iend - ipos, oend - opos);
+  FST_CHECK_EQ(iend - ipos, oend - opos);
   for (; ipos != iend; ++ipos, ++opos)
     cur = trie_.Insert(cur, InputOutputLabel(input[ipos], output[opos]));
   // We only need to attach final weight when there is an output
@@ -920,7 +920,7 @@ void FeatureGroupBuilder<A>::BuildBackLinks() {
             int problem_link = only_input_link != kNoTrieNodeId
                                    ? only_input_link
                                    : only_output_link;
-            CHECK_NE(problem_link, kNoTrieNodeId);
+            FST_CHECK_NE(problem_link, kNoTrieNodeId);
             FSTERROR() << "Branching back-off chain:\n"
                        << "\tnode " << child << ": "
                        << TriePath(child, topology) << "\n"
@@ -1049,10 +1049,10 @@ typename A::Label GuessStartOrEnd(std::vector<typename A::Label> *sequence,
     const bool left = non_boundary_on_left[i], right = non_boundary_on_right[i];
     if (left && right) {
       // Boundary in the middle
-      LOG(WARNING) << "Boundary label in the middle of the sequence! position: "
+      FST_LOG(WARNING) << "Boundary label in the middle of the sequence! position: "
                    << i << "; boundary: " << boundary
                    << "; sequence: " << JoinLabels(*sequence, nullptr);
-      LOG(WARNING)
+      FST_LOG(WARNING)
           << "This is an invalid sequence anyway so I will set it to start.";
       (*sequence)[i] = LinearFstData<A>::kStartOfSentence;
     } else if (left && !right) {

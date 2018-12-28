@@ -23,7 +23,7 @@ FarReaderClass *FarReaderClass::Open(const string &filename) {
 
 FarReaderClass *FarReaderClass::Open(const std::vector<string> &filenames) {
   if (filenames.empty()) {
-    LOG(ERROR) << "FarReaderClass::Open: No files specified";
+    FST_LOG(ERROR) << "FarReaderClass::Open: No files specified";
     return nullptr;
   }
   auto it = filenames.cbegin();
@@ -36,7 +36,7 @@ FarReaderClass *FarReaderClass::Open(const std::vector<string> &filenames) {
     const string other_arc_type = LoadArcTypeFromFar(*it);
     if (other_arc_type.empty()) return nullptr;
     if (arc_type != other_arc_type) {
-      LOG(ERROR) << "FarReaderClass::Open: Trying to open FARs with "
+      FST_LOG(ERROR) << "FarReaderClass::Open: Trying to open FARs with "
                  << "non-matching arc types:\n\t" << arc_type << " and "
                  << other_arc_type;
       return nullptr;

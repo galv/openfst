@@ -44,12 +44,12 @@ int main(int argc, char **argv) {
   static const int kCacheGcLimit = 20;
 
   srand(FLAGS_seed);
-  LOG(INFO) << "Seed = " << FLAGS_seed;
+  FST_LOG(INFO) << "Seed = " << FLAGS_seed;
 
   FLAGS_fst_default_cache_gc = rand() % 2;
   FLAGS_fst_default_cache_gc_limit = rand() % kCacheGcLimit;
-  VLOG(1) << "default_cache_gc:" << FLAGS_fst_default_cache_gc;
-  VLOG(1) << "default_cache_gc_limit:" << FLAGS_fst_default_cache_gc_limit;
+  VFST_LOG(1) << "default_cache_gc:" << FLAGS_fst_default_cache_gc;
+  VFST_LOG(1) << "default_cache_gc_limit:" << FLAGS_fst_default_cache_gc_limit;
 
 #ifdef TEST_TROPICAL
   using TropicalWeightGenerate = WeightGenerate<TropicalWeight>;

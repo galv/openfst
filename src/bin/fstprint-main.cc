@@ -53,7 +53,7 @@ int fstprint_main(int argc, char **argv) {
   if (argc == 3) {
     fstrm.open(argv[2]);
     if (!fstrm) {
-      LOG(ERROR) << argv[0] << ": Open failed, file = " << argv[2];
+      FST_LOG(ERROR) << argv[0] << ": Open failed, file = " << argv[2];
       return 1;
     }
     dest = argv[2];

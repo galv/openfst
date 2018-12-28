@@ -370,7 +370,7 @@ class FstClass : public FstClassBase {
   template <class Arc>
   static FstClass *Read(std::istream &stream, const FstReadOptions &opts) {
     if (!opts.header) {
-      LOG(ERROR) << "FstClass::Read: Options header not specified";
+      FST_LOG(ERROR) << "FstClass::Read: Options header not specified";
       return nullptr;
     }
     const FstHeader &hdr = *opts.header;

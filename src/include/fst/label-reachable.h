@@ -170,8 +170,8 @@ class LabelReachable {
 
   ~LabelReachable() {
     if (ncalls_ > 0) {
-      VLOG(2) << "# of calls: " << ncalls_;
-      VLOG(2) << "# of intervals/call: " << (nintervals_ / ncalls_);
+      VFST_LOG(2) << "# of calls: " << ncalls_;
+      VFST_LOG(2) << "# of intervals/call: " << (nintervals_ / ncalls_);
     }
   }
 
@@ -450,14 +450,14 @@ class LabelReachable {
       nintervals += interval_sets[s].Size();
       if (interval_sets[s].Size() > 1) {
         ++non_intervals;
-        VLOG(3) << "state: " << s
+        VFST_LOG(3) << "state: " << s
                 << " # of intervals: " << interval_sets[s].Size();
       }
     }
-    VLOG(2) << "# of states: " << ins;
-    VLOG(2) << "# of intervals: " << nintervals;
-    VLOG(2) << "# of intervals/state: " << nintervals / ins;
-    VLOG(2) << "# of non-interval states: " << non_intervals;
+    VFST_LOG(2) << "# of states: " << ins;
+    VFST_LOG(2) << "# of intervals: " << nintervals;
+    VFST_LOG(2) << "# of intervals/state: " << nintervals / ins;
+    VFST_LOG(2) << "# of non-interval states: " << non_intervals;
   }
 
   template <class Iterator>

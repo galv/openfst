@@ -387,7 +387,7 @@ class NGramFst : public ImplToExpandedFst<internal::NGramFstImpl<A>> {
       std::ifstream strm(filename,
                               std::ios_base::in | std::ios_base::binary);
       if (!strm.good()) {
-        LOG(ERROR) << "NGramFst::Read: Can't open file: " << filename;
+        FST_LOG(ERROR) << "NGramFst::Read: Can't open file: " << filename;
         return nullptr;
       }
       return Read(strm, FstReadOptions(filename));
@@ -503,7 +503,7 @@ NGramFstImpl<A>::NGramFstImpl(const Fst<A> &fst,
     }
     ArcIterator<Fst<A>> aiter(fst, unigram);
     if (aiter.Done()) {
-      LOG(WARNING) << "Unigram state " << unigram << " has no arcs.";
+      FST_LOG(WARNING) << "Unigram state " << unigram << " has no arcs.";
       break;
     }
     if (aiter.Value().ilabel != 0) break;

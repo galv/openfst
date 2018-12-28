@@ -167,7 +167,7 @@ class AddOnImpl : public FstImpl<typename FST::Arc> {
     int32 magic_number = 0;
     ReadType(strm, &magic_number);  // Ensures this is an add-on FST.
     if (magic_number != kAddOnMagicNumber) {
-      LOG(ERROR) << "AddOnImpl::Read: Bad add-on header: " << nopts.source;
+      FST_LOG(ERROR) << "AddOnImpl::Read: Bad add-on header: " << nopts.source;
       return nullptr;
     }
     FstReadOptions fopts(opts);

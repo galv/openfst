@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
   if (!ifst) return 1;
 
   if (FLAGS_pdt_parentheses.empty()) {
-    LOG(ERROR) << argv[0] << ": No PDT parenthesis label pairs provided";
+    FST_LOG(ERROR) << argv[0] << ": No PDT parenthesis label pairs provided";
     return 1;
   }
 

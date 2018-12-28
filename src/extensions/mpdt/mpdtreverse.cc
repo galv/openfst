@@ -48,12 +48,12 @@ int main(int argc, char **argv) {
   if (!ifst) return 1;
 
   if (FLAGS_mpdt_parentheses.empty()) {
-    LOG(ERROR) << argv[0] << ": No MPDT parenthesis label pairs provided";
+    FST_LOG(ERROR) << argv[0] << ": No MPDT parenthesis label pairs provided";
     return 1;
   }
 
   if (FLAGS_mpdt_new_parentheses.empty()) {
-    LOG(ERROR) << argv[0] << ": No MPDT output parenthesis label file provided";
+    FST_LOG(ERROR) << argv[0] << ": No MPDT output parenthesis label file provided";
     return 1;
   }
 

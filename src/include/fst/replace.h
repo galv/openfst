@@ -533,7 +533,7 @@ class ReplaceFstImpl
                                        &all_non_empty_and_sorted));
     // Enables optional caching as long as sorted and all non-empty.
     always_cache_ = !all_non_empty_and_sorted;
-    VLOG(2) << "ReplaceFstImpl::ReplaceFstImpl: always_cache = "
+    VFST_LOG(2) << "ReplaceFstImpl::ReplaceFstImpl: always_cache = "
             << (always_cache_ ? "true" : "false");
   }
 
@@ -997,7 +997,7 @@ class ReplaceFst
       return new ReplaceFstMatcher<Arc, StateTable, CacheStore>(*this,
                                                                 match_type);
     } else {
-      VLOG(2) << "Not using replace matcher";
+      VFST_LOG(2) << "Not using replace matcher";
       return nullptr;
     }
   }

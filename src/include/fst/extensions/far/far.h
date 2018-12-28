@@ -214,7 +214,7 @@ class FstFarWriter : public FarWriter<A> {
 
   void Add(const string &key, const Fst<A> &fst) final {
     if (written_) {
-      LOG(WARNING) << "FstFarWriter::Add: only one FST supported,"
+      FST_LOG(WARNING) << "FstFarWriter::Add: only one FST supported,"
                    << " subsequent entries discarded.";
     } else {
       error_ = !fst.Write(filename_);
@@ -246,7 +246,7 @@ FarWriter<Arc> *FarWriter<Arc>::Create(const string &filename, FarType type) {
     case FAR_FST:
       return FstFarWriter<Arc>::Create(filename);
     default:
-      LOG(ERROR) << "FarWriter::Create: Unknown FAR type";
+      FST_LOG(ERROR) << "FarWriter::Create: Unknown FAR type";
       return nullptr;
   }
 }

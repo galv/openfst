@@ -228,7 +228,7 @@ class FactorWeightFstImpl : public CacheImpl<Arc> {
     SetInputSymbols(fst.InputSymbols());
     SetOutputSymbols(fst.OutputSymbols());
     if (mode_ == 0) {
-      LOG(WARNING) << "FactorWeightFst: Factor mode is set to 0; "
+      FST_LOG(WARNING) << "FactorWeightFst: Factor mode is set to 0; "
                    << "factoring neither arc weights nor final weights";
     }
   }

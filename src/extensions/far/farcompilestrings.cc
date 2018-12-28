@@ -69,13 +69,13 @@ int main(int argc, char **argv) {
 
   fst::FarEntryType entry_type;
   if (!s::GetFarEntryType(FLAGS_entry_type, &entry_type)) {
-    LOG(ERROR) << "Unknown or unsupported FAR entry type: " << FLAGS_entry_type;
+    FST_LOG(ERROR) << "Unknown or unsupported FAR entry type: " << FLAGS_entry_type;
     return 1;
   }
 
   fst::FarTokenType token_type;
   if (!s::GetFarTokenType(FLAGS_token_type, &token_type)) {
-    LOG(ERROR) << "Unkonwn or unsupported FAR token type: " << FLAGS_token_type;
+    FST_LOG(ERROR) << "Unkonwn or unsupported FAR token type: " << FLAGS_token_type;
     return 1;
   }
 

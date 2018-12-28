@@ -24,7 +24,7 @@ bool ReadLabelTriples(const string &filename,
                       bool allow_negative = false) {
   std::ifstream fstrm(filename);
   if (!fstrm) {
-    LOG(ERROR) << "ReadIntTriples: Can't open file: " << filename;
+    FST_LOG(ERROR) << "ReadIntTriples: Can't open file: " << filename;
     return false;
   }
   static constexpr auto kLineLen = 8096;
@@ -38,7 +38,7 @@ bool ReadLabelTriples(const string &filename,
     // Empty line or comment?
     if (col.empty() || col[0][0] == '\0' || col[0][0] == '#') continue;
     if (col.size() != 3) {
-      LOG(ERROR) << "ReadLabelTriples: Bad number of columns, "
+      FST_LOG(ERROR) << "ReadLabelTriples: Bad number of columns, "
                  << "file = " << filename << ", line = " << nline;
       return false;
     }
@@ -62,19 +62,19 @@ bool WriteLabelTriples(const string &filename,
                        const std::vector<std::pair<Label, Label>> &pairs,
                        const std::vector<Label> &assignments) {
   if (pairs.size() != assignments.size()) {
-    LOG(ERROR) << "WriteLabelTriples: Pairs and assignments of different sizes";
+    FST_LOG(ERROR) << "WriteLabelTriples: Pairs and assignments of different sizes";
     return false;
   }
   std::ofstream fstrm(filename);
   if (!fstrm) {
-    LOG(ERROR) << "WriteLabelTriples: Can't open file: " << filename;
+    FST_LOG(ERROR) << "WriteLabelTriples: Can't open file: " << filename;
     return false;
   }
   for (size_t n = 0; n < pairs.size(); ++n)
     fstrm << pairs[n].first << "\t" << pairs[n].second << "\t" << assignments[n]
           << "\n";
   if (!fstrm) {
-    LOG(ERROR) << "WriteLabelTriples: Write failed: "
+    FST_LOG(ERROR) << "WriteLabelTriples: Write failed: "
                << (filename.empty() ? "standard output" : filename);
     return false;
   }

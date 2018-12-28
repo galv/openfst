@@ -396,7 +396,7 @@ VectorFstImpl<S> *VectorFstImpl<S>::Read(std::istream &strm,
     int64 narcs;
     ReadType(strm, &narcs);
     if (!strm) {
-      LOG(ERROR) << "VectorFst::Read: Read failed: " << opts.source;
+      FST_LOG(ERROR) << "VectorFst::Read: Read failed: " << opts.source;
       return nullptr;
     }
     impl->ReserveArcs(state, narcs);
@@ -407,14 +407,14 @@ VectorFstImpl<S> *VectorFstImpl<S>::Read(std::istream &strm,
       arc.weight.Read(strm);
       ReadType(strm, &arc.nextstate);
       if (!strm) {
-        LOG(ERROR) << "VectorFst::Read: Read failed: " << opts.source;
+        FST_LOG(ERROR) << "VectorFst::Read: Read failed: " << opts.source;
         return nullptr;
       }
       impl->BaseImpl::AddArc(state, arc);
     }
   }
   if (hdr.NumStates() != kNoStateId && state != hdr.NumStates()) {
-    LOG(ERROR) << "VectorFst::Read: Unexpected end of file: " << opts.source;
+    FST_LOG(ERROR) << "VectorFst::Read: Unexpected end of file: " << opts.source;
     return nullptr;
   }
   return impl.release();
@@ -554,7 +554,7 @@ bool VectorFst<Arc, State>::WriteFst(const FST &fst, std::ostream &strm,
   }
   strm.flush();
   if (!strm) {
-    LOG(ERROR) << "VectorFst::Write: Write failed: " << opts.source;
+    FST_LOG(ERROR) << "VectorFst::Write: Write failed: " << opts.source;
     return false;
   }
   if (update_header) {
@@ -564,7 +564,7 @@ bool VectorFst<Arc, State>::WriteFst(const FST &fst, std::ostream &strm,
         start_offset);
   } else {
     if (num_states != hdr.NumStates()) {
-      LOG(ERROR) << "Inconsistent number of states observed during write";
+      FST_LOG(ERROR) << "Inconsistent number of states observed during write";
       return false;
     }
   }

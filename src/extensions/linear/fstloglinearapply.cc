@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
   string out_name = argc > 3 ? argv[3] : "";
 
   if (in_name.empty() && linear_name.empty()) {
-    LOG(ERROR) << argv[0] << ": Can't take both inputs from standard input.";
+    FST_LOG(ERROR) << argv[0] << ": Can't take both inputs from standard input.";
     return 1;
   }
 

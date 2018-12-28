@@ -90,7 +90,7 @@ bool FstHeader::Read(std::istream &strm, const string &source, bool rewind) {
   int32 magic_number = 0;
   ReadType(strm, &magic_number);
   if (magic_number != kFstMagicNumber) {
-      LOG(ERROR) << "FstHeader::Read: Bad FST header: " << source;
+      FST_LOG(ERROR) << "FstHeader::Read: Bad FST header: " << source;
       if (rewind) strm.seekg(pos);
       return false;
   }
@@ -103,7 +103,7 @@ bool FstHeader::Read(std::istream &strm, const string &source, bool rewind) {
   ReadType(strm, &numstates_);
   ReadType(strm, &numarcs_);
   if (!strm) {
-    LOG(ERROR) << "FstHeader::Read: Read failed: " << source;
+    FST_LOG(ERROR) << "FstHeader::Read: Read failed: " << source;
     return false;
   }
   if (rewind) strm.seekg(pos);
@@ -161,7 +161,7 @@ FstReadOptions::FstReadOptions(const string &source,
 FstReadOptions::FileReadMode FstReadOptions::ReadMode(const string &mode) {
   if (mode == "read") return READ;
   if (mode == "map") return MAP;
-  LOG(ERROR) << "Unknown file read mode " << mode;
+  FST_LOG(ERROR) << "Unknown file read mode " << mode;
   return READ;
 }
 

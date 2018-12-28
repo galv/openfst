@@ -52,7 +52,7 @@ class StringReader {
   bool Done() { return done_; }
 
   void Next() {
-    VLOG(1) << "Processing source " << source_ << " at line " << nline_;
+    VFST_LOG(1) << "Processing source " << source_ << " at line " << nline_;
     if (!istrm_) {  // We're done if we have no more input.
       done_ = true;
       return;
@@ -166,7 +166,7 @@ void FarCompileStrings(const std::vector<string> &in_fnames,
     const SymbolTableTextOptions opts(allow_negative_labels);
     syms.reset(SymbolTable::ReadText(symbols_fname, opts));
     if (!syms) {
-      LOG(ERROR) << "FarCompileStrings: Error reading symbol table: "
+      FST_LOG(ERROR) << "FarCompileStrings: Error reading symbol table: "
                  << symbols_fname;
       return;
     }

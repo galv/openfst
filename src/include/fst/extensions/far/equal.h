@@ -18,12 +18,12 @@ bool FarEqual(const string &filename1, const string &filename2,
               const string &end_key = string()) {
   std::unique_ptr<FarReader<Arc>> reader1(FarReader<Arc>::Open(filename1));
   if (!reader1) {
-    LOG(ERROR) << "FarEqual: Could not open FAR file " << filename1;
+    FST_LOG(ERROR) << "FarEqual: Could not open FAR file " << filename1;
     return false;
   }
   std::unique_ptr<FarReader<Arc>> reader2(FarReader<Arc>::Open(filename2));
   if (!reader2) {
-    LOG(ERROR) << "FarEqual: Could not open FAR file " << filename2;
+    FST_LOG(ERROR) << "FarEqual: Could not open FAR file " << filename2;
     return false;
   }
   if (!begin_key.empty()) {
@@ -32,7 +32,7 @@ bool FarEqual(const string &filename1, const string &filename2,
     if (!find_begin1 || !find_begin2) {
       bool ret = !find_begin1 && !find_begin2;
       if (!ret) {
-        LOG(ERROR) << "FarEqual: Key " << begin_key << " missing from "
+        FST_LOG(ERROR) << "FarEqual: Key " << begin_key << " missing from "
                    << (find_begin1 ? "second" : "first") << " archive";
       }
       return ret;
@@ -46,16 +46,16 @@ bool FarEqual(const string &filename1, const string &filename2,
       return true;
     }
     if (key1 != key2) {
-      LOG(ERROR) << "FarEqual: Mismatched keys " << key1 << " and " << key2;
+      FST_LOG(ERROR) << "FarEqual: Mismatched keys " << key1 << " and " << key2;
       return false;
     }
     if (!Equal(*(reader1->GetFst()), *(reader2->GetFst()), delta)) {
-      LOG(ERROR) << "FarEqual: FSTs for key " << key1 << " are not equal";
+      FST_LOG(ERROR) << "FarEqual: FSTs for key " << key1 << " are not equal";
       return false;
     }
   }
   if (!reader1->Done() || !reader2->Done()) {
-    LOG(ERROR) << "FarEqual: Key "
+    FST_LOG(ERROR) << "FarEqual: Key "
                << (reader1->Done() ? reader2->GetKey() : reader1->GetKey())
                << " missing from " << (reader2->Done() ? "first" : "second")
                << " archive";

@@ -70,13 +70,13 @@ int fstreplace_main(int argc, char **argv) {
   ReplaceLabelType call_label_type;
   if (!s::GetReplaceLabelType(FLAGS_call_arc_labeling, FLAGS_epsilon_on_replace,
                               &call_label_type)) {
-    LOG(ERROR) << argv[0] << ": Unknown or unsupported call arc replace "
+    FST_LOG(ERROR) << argv[0] << ": Unknown or unsupported call arc replace "
                << "label type: " << FLAGS_call_arc_labeling;
   }
   ReplaceLabelType return_label_type;
   if (!s::GetReplaceLabelType(FLAGS_return_arc_labeling,
                               FLAGS_epsilon_on_replace, &return_label_type)) {
-    LOG(ERROR) << argv[0] << ": Unknown or unsupported return arc replace "
+    FST_LOG(ERROR) << argv[0] << ": Unknown or unsupported return arc replace "
                << "label type: " << FLAGS_return_arc_labeling;
   }
 

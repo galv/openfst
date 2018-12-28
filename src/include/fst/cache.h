@@ -732,7 +732,7 @@ template <class CacheStore>
 void GCCacheStore<CacheStore>::GC(const State *current, bool free_recent,
                                   float cache_fraction) {
   if (!cache_gc_) return;
-  VLOG(2) << "GCCacheStore: Enter GC: object = "
+  VFST_LOG(2) << "GCCacheStore: Enter GC: object = "
           << "(" << this << "), free recently cached = " << free_recent
           << ", cache size = " << cache_size_
           << ", cache frac = " << cache_fraction
@@ -765,7 +765,7 @@ void GCCacheStore<CacheStore>::GC(const State *current, bool free_recent,
   } else if (cache_size_ > 0) {
     FSTERROR() << "GCCacheStore:GC: Unable to free all cached states";
   }
-  VLOG(2) << "GCCacheStore: Exit GC: object = "
+  VFST_LOG(2) << "GCCacheStore: Exit GC: object = "
           << "(" << this << "), free recently cached = " << free_recent
           << ", cache size = " << cache_size_
           << ", cache frac = " << cache_fraction

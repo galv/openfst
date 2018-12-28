@@ -30,7 +30,7 @@ REGISTER_FST_CLASSES(Log64Arc);
 template <class FstT>
 FstT *ReadFst(std::istream &istrm, const string &fname) {
   if (!istrm) {
-    LOG(ERROR) << "ReadFst: Can't open file: " << fname;
+    FST_LOG(ERROR) << "ReadFst: Can't open file: " << fname;
     return nullptr;
   }
   FstHeader hdr;
@@ -40,7 +40,7 @@ FstT *ReadFst(std::istream &istrm, const string &fname) {
   const auto reader =
       IORegistration<FstT>::Register::GetRegister()->GetReader(arc_type);
   if (!reader) {
-    LOG(ERROR) << "ReadFst: Unknown arc type: " << arc_type;
+    FST_LOG(ERROR) << "ReadFst: Unknown arc type: " << arc_type;
     return nullptr;
   }
   return reader(istrm, read_options);

@@ -30,29 +30,29 @@ template <class Arc>
 bool Equal(const Fst<Arc> &fst1, const Fst<Arc> &fst2, float delta = kDelta,
            uint32 etype = kEqualFsts) {
   if ((etype & kEqualFstTypes) && (fst1.Type() != fst2.Type())) {
-    VLOG(1) << "Equal: Mismatched FST types (" << fst1.Type() << " != "
+    VFST_LOG(1) << "Equal: Mismatched FST types (" << fst1.Type() << " != "
             << fst2.Type() << ")";
     return false;
   }
   if ((etype & kEqualCompatProperties) &&
       !CompatProperties(fst1.Properties(kCopyProperties, false),
                         fst2.Properties(kCopyProperties, false))) {
-    VLOG(1) << "Equal: Properties not compatible";
+    VFST_LOG(1) << "Equal: Properties not compatible";
     return false;
   }
   if (etype & kEqualCompatSymbols) {
     if (!CompatSymbols(fst1.InputSymbols(), fst2.InputSymbols(), false)) {
-      VLOG(1) << "Equal: Input symbols not compatible";
+      VFST_LOG(1) << "Equal: Input symbols not compatible";
       return false;
     }
     if (!CompatSymbols(fst1.OutputSymbols(), fst2.OutputSymbols(), false)) {
-      VLOG(1) << "Equal: Output symbols not compatible";
+      VFST_LOG(1) << "Equal: Output symbols not compatible";
       return false;
     }
   }
   if (!(etype & kEqualFsts)) return true;
   if (fst1.Start() != fst2.Start()) {
-    VLOG(1) << "Equal: Mismatched start states (" << fst1.Start() << " != "
+    VFST_LOG(1) << "Equal: Mismatched start states (" << fst1.Start() << " != "
             << fst2.Start() << ")";
     return false;
   }
@@ -60,20 +60,20 @@ bool Equal(const Fst<Arc> &fst1, const Fst<Arc> &fst2, float delta = kDelta,
   StateIterator<Fst<Arc>> siter2(fst2);
   while (!siter1.Done() || !siter2.Done()) {
     if (siter1.Done() || siter2.Done()) {
-      VLOG(1) << "Equal: Mismatched number of states";
+      VFST_LOG(1) << "Equal: Mismatched number of states";
       return false;
     }
     const auto s1 = siter1.Value();
     const auto s2 = siter2.Value();
     if (s1 != s2) {
-      VLOG(1) << "Equal: Mismatched states (" << s1 << "!= "
+      VFST_LOG(1) << "Equal: Mismatched states (" << s1 << "!= "
               << s2 << ")";
       return false;
     }
     const auto &final1 = fst1.Final(s1);
     const auto &final2 = fst2.Final(s2);
     if (!ApproxEqual(final1, final2, delta)) {
-      VLOG(1) << "Equal: Mismatched final weights at state " << s1
+      VFST_LOG(1) << "Equal: Mismatched final weights at state " << s1
               << " (" << final1 << " != " << final2 << ")";
       return false;
     }
@@ -81,28 +81,28 @@ bool Equal(const Fst<Arc> &fst1, const Fst<Arc> &fst2, float delta = kDelta,
     ArcIterator<Fst<Arc>> aiter2(fst2, s2);
     for (auto a = 0; !aiter1.Done() || !aiter2.Done(); ++a) {
       if (aiter1.Done() || aiter2.Done()) {
-        VLOG(1) << "Equal: Mismatched number of arcs at state " << s1;
+        VFST_LOG(1) << "Equal: Mismatched number of arcs at state " << s1;
         return false;
       }
       const auto &arc1 = aiter1.Value();
       const auto &arc2 = aiter2.Value();
       if (arc1.ilabel != arc2.ilabel) {
-        VLOG(1) << "Equal: Mismatched arc input labels at state " << s1
+        VFST_LOG(1) << "Equal: Mismatched arc input labels at state " << s1
                 << ", arc " << a << " (" << arc1.ilabel << " != "
                 << arc2.ilabel << ")";
         return false;
       } else if (arc1.olabel != arc2.olabel) {
-        VLOG(1) << "Equal: Mismatched arc output labels at state " << s1
+        VFST_LOG(1) << "Equal: Mismatched arc output labels at state " << s1
                 << ", arc " << a << " (" << arc1.olabel << " != "
                 << arc2.olabel << ")";
         return false;
       } else if (!ApproxEqual(arc1.weight, arc2.weight, delta)) {
-        VLOG(1) << "Equal: Mismatched arc weights at state " << s1
+        VFST_LOG(1) << "Equal: Mismatched arc weights at state " << s1
                 << ", arc " << a << " (" << arc1.weight << " != "
                 << arc2.weight << ")";
         return false;
       } else if (arc1.nextstate != arc2.nextstate) {
-        VLOG(1) << "Equal: Mismatched next state at state " << s1
+        VFST_LOG(1) << "Equal: Mismatched next state at state " << s1
                 << ", arc " << a << " (" << arc1.nextstate << " != "
                 << arc2.nextstate << ")";
         return false;

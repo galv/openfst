@@ -45,8 +45,8 @@ class FstTester {
   // methods defined in a generic Fst.
   template <class G>
   void TestBase(const G &fst) const {
-    CHECK(Verify(fst));
-    CHECK_EQ(fst.Start(), 0);
+    FST_CHECK(Verify(fst));
+    FST_CHECK_EQ(fst.Start(), 0);
     StateId ns = 0;
     StateIterator<G> siter(fst);
     Matcher<G> matcher(fst, MATCH_INPUT);
@@ -56,7 +56,7 @@ class FstTester {
     for (siter.Reset(); !siter.Done(); siter.Next()) {
       StateId s = siter.Value();
       matcher.SetState(s);
-      CHECK_EQ(fst.Final(s), NthWeight(s));
+      FST_CHECK_EQ(fst.Final(s), NthWeight(s));
       size_t na = 0;
       ArcIterator<G> aiter(fst, s);
       for (; !aiter.Done(); aiter.Next()) {
@@ -64,28 +64,28 @@ class FstTester {
       for (aiter.Reset(); !aiter.Done(); aiter.Next()) {
         ++na;
         const Arc &arc = aiter.Value();
-        CHECK_EQ(arc.ilabel, na);
-        CHECK_EQ(arc.olabel, 0);
-        CHECK_EQ(arc.weight, NthWeight(na));
-        CHECK_EQ(arc.nextstate, s);
+        FST_CHECK_EQ(arc.ilabel, na);
+        FST_CHECK_EQ(arc.olabel, 0);
+        FST_CHECK_EQ(arc.weight, NthWeight(na));
+        FST_CHECK_EQ(arc.nextstate, s);
         if (match_type == MATCH_INPUT) {
-          CHECK(matcher.Find(arc.ilabel));
-          CHECK_EQ(matcher.Value().ilabel, arc.ilabel);
+          FST_CHECK(matcher.Find(arc.ilabel));
+          FST_CHECK_EQ(matcher.Value().ilabel, arc.ilabel);
         }
       }
-      CHECK_EQ(na, s);
-      CHECK_EQ(na, aiter.Position());
-      CHECK_EQ(fst.NumArcs(s), s);
-      CHECK_EQ(fst.NumInputEpsilons(s), 0);
-      CHECK_EQ(fst.NumOutputEpsilons(s), s);
-      CHECK(!matcher.Find(s + 1));     // out-of-range
-      CHECK(!matcher.Find(kNoLabel));  // no explicit epsilons
-      CHECK(matcher.Find(0));
-      CHECK_EQ(matcher.Value().ilabel, kNoLabel);  // implicit epsilon loop
+      FST_CHECK_EQ(na, s);
+      FST_CHECK_EQ(na, aiter.Position());
+      FST_CHECK_EQ(fst.NumArcs(s), s);
+      FST_CHECK_EQ(fst.NumInputEpsilons(s), 0);
+      FST_CHECK_EQ(fst.NumOutputEpsilons(s), s);
+      FST_CHECK(!matcher.Find(s + 1));     // out-of-range
+      FST_CHECK(!matcher.Find(kNoLabel));  // no explicit epsilons
+      FST_CHECK(matcher.Find(0));
+      FST_CHECK_EQ(matcher.Value().ilabel, kNoLabel);  // implicit epsilon loop
       ++ns;
     }
-    CHECK(fst.Properties(kNotAcceptor, true));
-    CHECK(fst.Properties(kOEpsilons, true));
+    FST_CHECK(fst.Properties(kNotAcceptor, true));
+    FST_CHECK(fst.Properties(kOEpsilons, true));
   }
 
   void TestBase() const { TestBase(*testfst_); }
@@ -97,8 +97,8 @@ class FstTester {
     for (StateIterator<G> siter(fst); !siter.Done(); siter.Next()) {
       ++ns;
     }
-    CHECK_EQ(fst.NumStates(), ns);
-    CHECK(fst.Properties(kExpanded, false));
+    FST_CHECK_EQ(fst.NumStates(), ns);
+    FST_CHECK(fst.Properties(kExpanded, false));
   }
 
   void TestExpanded() const { TestExpanded(*testfst_); }
@@ -119,26 +119,26 @@ class FstTester {
         arc.ilabel = 0;
         aiter.SetValue(arc);
         arc = aiter.Value();
-        CHECK_EQ(arc.ilabel, 0);
-        CHECK_EQ(fst->NumInputEpsilons(s), ni + 1);
+        FST_CHECK_EQ(arc.ilabel, 0);
+        FST_CHECK_EQ(fst->NumInputEpsilons(s), ni + 1);
         arc.ilabel = na;
         aiter.SetValue(arc);
-        CHECK_EQ(fst->NumInputEpsilons(s), ni);
+        FST_CHECK_EQ(fst->NumInputEpsilons(s), ni);
       }
     }
 
     G *cfst1 = fst->Copy();
     cfst1->DeleteStates();
-    CHECK_EQ(cfst1->NumStates(), 0);
+    FST_CHECK_EQ(cfst1->NumStates(), 0);
     delete cfst1;
 
     G *cfst2 = fst->Copy();
     for (StateIterator<G> siter(*cfst2); !siter.Done(); siter.Next()) {
       StateId s = siter.Value();
       cfst2->DeleteArcs(s);
-      CHECK_EQ(cfst2->NumArcs(s), 0);
-      CHECK_EQ(cfst2->NumInputEpsilons(s), 0);
-      CHECK_EQ(cfst2->NumOutputEpsilons(s), 0);
+      FST_CHECK_EQ(cfst2->NumArcs(s), 0);
+      FST_CHECK_EQ(cfst2->NumInputEpsilons(s), 0);
+      FST_CHECK_EQ(cfst2->NumOutputEpsilons(s), 0);
     }
     delete cfst2;
   }
@@ -151,16 +151,16 @@ class FstTester {
     // Assignment from G
     G afst1;
     afst1 = *fst;
-    CHECK(Equal(*fst, afst1));
+    FST_CHECK(Equal(*fst, afst1));
 
     // Assignment from Fst
     G afst2;
     afst2 = *static_cast<const Fst<Arc> *>(fst);
-    CHECK(Equal(*fst, afst2));
+    FST_CHECK(Equal(*fst, afst2));
 
     // Assignment from self
     afst2.operator=(afst2);
-    CHECK(Equal(*fst, afst2));
+    FST_CHECK(Equal(*fst, afst2));
   }
 
   void TestAssign() { TestAssign(testfst_); }
@@ -191,9 +191,9 @@ class FstTester {
     const string aligned = FLAGS_tmpdir + "/aligned.fst";
     {
       // write/read
-      CHECK(fst.Write(filename));
+      FST_CHECK(fst.Write(filename));
       G *ffst = G::Read(filename);
-      CHECK(ffst);
+      FST_CHECK(ffst);
       TestBase(*ffst);
       delete ffst;
     }
@@ -201,14 +201,14 @@ class FstTester {
     {
       // generic read/cast/test
       Fst<Arc> *gfst = Fst<Arc>::Read(filename);
-      CHECK(gfst);
+      FST_CHECK(gfst);
       G *dfst = static_cast<G *>(gfst);
       TestBase(*dfst);
 
       // generic write/read/test
-      CHECK(gfst->Write(filename));
+      FST_CHECK(gfst->Write(filename));
       Fst<Arc> *hfst = Fst<Arc>::Read(filename);
-      CHECK(hfst);
+      FST_CHECK(hfst);
       TestBase(*hfst);
       delete gfst;
       delete hfst;
@@ -221,14 +221,14 @@ class FstTester {
         FstWriteOptions opts;
         opts.source = aligned;
         opts.align = true;
-        CHECK(fst.Write(ostr, opts));
+        FST_CHECK(fst.Write(ostr, opts));
       }
       std::ifstream istr(aligned);
       FstReadOptions opts;
       opts.mode = FstReadOptions::ReadMode("map");
       opts.source = aligned;
       G *gfst = G::Read(istr, opts);
-      CHECK(gfst);
+      FST_CHECK(gfst);
       TestBase(*gfst);
       delete gfst;
     }
@@ -240,14 +240,14 @@ class FstTester {
         FstWriteOptions opts;
         opts.source = aligned;
         opts.align = false;
-        CHECK(fst.Write(ostr, opts));
+        FST_CHECK(fst.Write(ostr, opts));
       }
       std::ifstream istr(aligned);
       FstReadOptions opts;
       opts.mode = FstReadOptions::ReadMode("map");
       opts.source = aligned;
       G *gfst = G::Read(istr, opts);
-      CHECK(gfst);
+      FST_CHECK(gfst);
       TestBase(*gfst);
       delete gfst;
     }
@@ -255,7 +255,7 @@ class FstTester {
     // expanded write/read/test
     if (fst.Properties(kExpanded, false)) {
       ExpandedFst<Arc> *efst = ExpandedFst<Arc>::Read(filename);
-      CHECK(efst);
+      FST_CHECK(efst);
       TestBase(*efst);
       TestExpanded(*efst);
       delete efst;
@@ -264,7 +264,7 @@ class FstTester {
     // mutable write/read/test
     if (fst.Properties(kMutable, false)) {
       MutableFst<Arc> *mfst = MutableFst<Arc>::Read(filename);
-      CHECK(mfst);
+      FST_CHECK(mfst);
       TestBase(*mfst);
       TestExpanded(*mfst);
       TestMutable(mfst);
@@ -289,7 +289,7 @@ class FstTester {
   //         (4) nextstate = s
   void InitFst(MutableFst<Arc> *fst, size_t nstates) const {
     fst->DeleteStates();
-    CHECK_GT(nstates, 0);
+    FST_CHECK_GT(nstates, 0);
 
     for (StateId s = 0; s < nstates; ++s) {
       fst->AddState();

@@ -207,27 +207,27 @@ ConstFstImpl<Arc, Unsigned> *ConstFstImpl<Arc, Unsigned>::Read(
     hdr.SetFlags(hdr.GetFlags() | FstHeader::IS_ALIGNED);
   }
   if ((hdr.GetFlags() & FstHeader::IS_ALIGNED) && !AlignInput(strm)) {
-    LOG(ERROR) << "ConstFst::Read: Alignment failed: " << opts.source;
+    FST_LOG(ERROR) << "ConstFst::Read: Alignment failed: " << opts.source;
     return nullptr;
   }
   size_t b = impl->nstates_ * sizeof(ConstState);
   impl->states_region_.reset(
       MappedFile::Map(&strm, opts.mode == FstReadOptions::MAP, opts.source, b));
   if (!strm || !impl->states_region_) {
-    LOG(ERROR) << "ConstFst::Read: Read failed: " << opts.source;
+    FST_LOG(ERROR) << "ConstFst::Read: Read failed: " << opts.source;
     return nullptr;
   }
   impl->states_ =
       reinterpret_cast<ConstState *>(impl->states_region_->mutable_data());
   if ((hdr.GetFlags() & FstHeader::IS_ALIGNED) && !AlignInput(strm)) {
-    LOG(ERROR) << "ConstFst::Read: Alignment failed: " << opts.source;
+    FST_LOG(ERROR) << "ConstFst::Read: Alignment failed: " << opts.source;
     return nullptr;
   }
   b = impl->narcs_ * sizeof(Arc);
   impl->arcs_region_.reset(
       MappedFile::Map(&strm, opts.mode == FstReadOptions::MAP, opts.source, b));
   if (!strm || !impl->arcs_region_) {
-    LOG(ERROR) << "ConstFst::Read: Read failed: " << opts.source;
+    FST_LOG(ERROR) << "ConstFst::Read: Read failed: " << opts.source;
     return nullptr;
   }
   impl->arcs_ = reinterpret_cast<Arc *>(impl->arcs_region_->mutable_data());
@@ -365,7 +365,7 @@ bool ConstFst<Arc, Unsigned>::WriteFst(const FST &fst, std::ostream &strm,
   internal::FstImpl<Arc>::WriteFstHeader(fst, strm, opts, file_version, type,
                                          properties, &hdr);
   if (opts.align && !AlignOutput(strm)) {
-    LOG(ERROR) << "Could not align file during write after header";
+    FST_LOG(ERROR) << "Could not align file during write after header";
     return false;
   }
   size_t pos = 0;
@@ -385,7 +385,7 @@ bool ConstFst<Arc, Unsigned>::WriteFst(const FST &fst, std::ostream &strm,
   hdr.SetNumStates(states);
   hdr.SetNumArcs(pos);
   if (opts.align && !AlignOutput(strm)) {
-    LOG(ERROR) << "Could not align file during write after writing states";
+    FST_LOG(ERROR) << "Could not align file during write after writing states";
   }
   for (StateIterator<FST> siter(fst); !siter.Done(); siter.Next()) {
     for (ArcIterator<FST> aiter(fst, siter.Value()); !aiter.Done();
@@ -404,7 +404,7 @@ bool ConstFst<Arc, Unsigned>::WriteFst(const FST &fst, std::ostream &strm,
   }
   strm.flush();
   if (!strm) {
-    LOG(ERROR) << "ConstFst::WriteFst: write failed: " << opts.source;
+    FST_LOG(ERROR) << "ConstFst::WriteFst: write failed: " << opts.source;
     return false;
   }
   if (update_header) {
@@ -412,11 +412,11 @@ bool ConstFst<Arc, Unsigned>::WriteFst(const FST &fst, std::ostream &strm,
         fst, strm, opts, file_version, type, properties, &hdr, start_offset);
   } else {
     if (hdr.NumStates() != num_states) {
-      LOG(ERROR) << "Inconsistent number of states observed during write";
+      FST_LOG(ERROR) << "Inconsistent number of states observed during write";
       return false;
     }
     if (hdr.NumArcs() != num_arcs) {
-      LOG(ERROR) << "Inconsistent number of arcs observed during write";
+      FST_LOG(ERROR) << "Inconsistent number of arcs observed during write";
       return false;
     }
   }

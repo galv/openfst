@@ -230,12 +230,12 @@ class STListReader {
 template <class Header>
 bool ReadSTListHeader(const string &filename, Header *header) {
   if (filename.empty()) {
-    LOG(ERROR) << "ReadSTListHeader: Can't read header from standard input";
+    FST_LOG(ERROR) << "ReadSTListHeader: Can't read header from standard input";
     return false;
   }
   std::ifstream strm(filename, std::ios_base::in | std::ios_base::binary);
   if (!strm) {
-    LOG(ERROR) << "ReadSTListHeader: Could not open file: " << filename;
+    FST_LOG(ERROR) << "ReadSTListHeader: Could not open file: " << filename;
     return false;
   }
   int32 magic_number = 0;
@@ -243,18 +243,18 @@ bool ReadSTListHeader(const string &filename, Header *header) {
   int32 file_version = 0;
   ReadType(strm, &file_version);
   if (magic_number != kSTListMagicNumber) {
-    LOG(ERROR) << "ReadSTListHeader: Wrong file type: " << filename;
+    FST_LOG(ERROR) << "ReadSTListHeader: Wrong file type: " << filename;
     return false;
   }
   if (file_version != kSTListFileVersion) {
-    LOG(ERROR) << "ReadSTListHeader: Wrong file version: " << filename;
+    FST_LOG(ERROR) << "ReadSTListHeader: Wrong file version: " << filename;
     return false;
   }
   string key;
   ReadType(strm, &key);
   header->Read(strm, filename + ":" + key);
   if (!strm) {
-    LOG(ERROR) << "ReadSTListHeader: Error reading file: " << filename;
+    FST_LOG(ERROR) << "ReadSTListHeader: Error reading file: " << filename;
     return false;
   }
   return true;

@@ -82,8 +82,8 @@ bool RandEquivalent(const Fst<Arc> &fst1, const Fst<Arc> &fst2,
     }
     const auto sum2 = ShortestDistance(pfst2);
     if (!ApproxEqual(sum1, sum2, delta)) {
-      VLOG(1) << "Sum1 = " << sum1;
-      VLOG(1) << "Sum2 = " << sum2;
+      VFST_LOG(1) << "Sum1 = " << sum1;
+      VFST_LOG(1) << "Sum2 = " << sum2;
       result = false;
       break;
     }

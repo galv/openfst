@@ -68,7 +68,7 @@ class GenericRegister {
     const auto so_filename = ConvertKeyToSoFilename(key);
     void *handle = dlopen(so_filename.c_str(), RTLD_LAZY);
     if (handle == nullptr) {
-      LOG(ERROR) << "GenericRegister::GetEntry: " << dlerror();
+      FST_LOG(ERROR) << "GenericRegister::GetEntry: " << dlerror();
       return EntryType();
     }
 #ifdef RUN_MODULE_INITIALIZERS
@@ -79,7 +79,7 @@ class GenericRegister {
     // methods.
     const auto *entry = this->LookupEntry(key);
     if (entry == nullptr) {
-      LOG(ERROR) << "GenericRegister::GetEntry: "
+      FST_LOG(ERROR) << "GenericRegister::GetEntry: "
                  << "lookup failed in shared object: " << so_filename;
       return EntryType();
     }

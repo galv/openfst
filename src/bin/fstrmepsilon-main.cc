@@ -47,7 +47,7 @@ int fstrmepsilon_main(int argc, char **argv) {
 
   fst::QueueType queue_type;
   if (!s::GetQueueType(FLAGS_queue_type, &queue_type)) {
-    LOG(ERROR) << argv[0]
+    FST_LOG(ERROR) << argv[0]
                << ": Unknown or unsupported queue type: " << FLAGS_queue_type;
     return 1;
   }

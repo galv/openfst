@@ -43,7 +43,7 @@ int fstequivalent_main(int argc, char **argv) {
   const string in2_name = strcmp(argv[2], "-") == 0 ? "" : argv[2];
 
   if (in1_name.empty() && in2_name.empty()) {
-    LOG(ERROR) << argv[0] << ": Can't take both inputs from standard input";
+    FST_LOG(ERROR) << argv[0] << ": Can't take both inputs from standard input";
     return 1;
   }
 
@@ -55,19 +55,19 @@ int fstequivalent_main(int argc, char **argv) {
 
   if (!FLAGS_random) {
     bool result = s::Equivalent(*ifst1, *ifst2, FLAGS_delta);
-    if (!result) VLOG(1) << "FSTs are not equivalent";
+    if (!result) VFST_LOG(1) << "FSTs are not equivalent";
     return result ? 0 : 2;
   } else {
     s::RandArcSelection ras;
     if (!s::GetRandArcSelection(FLAGS_select, &ras)) {
-      LOG(ERROR) << argv[0] << ": Unknown or unsupported select type "
+      FST_LOG(ERROR) << argv[0] << ": Unknown or unsupported select type "
                             << FLAGS_select;
       return 1;
     }
     const RandGenOptions<s::RandArcSelection> opts(ras, FLAGS_max_length);
     bool result = s::RandEquivalent(*ifst1, *ifst2, FLAGS_npath, FLAGS_delta,
                                     FLAGS_seed, opts);
-    if (!result) VLOG(1) << "FSTs are not equivalent";
+    if (!result) VFST_LOG(1) << "FSTs are not equivalent";
     return result ? 0 : 2;
   }
 }

@@ -35,7 +35,7 @@ int fsttopsort_main(int argc, char **argv) {
 
   bool acyclic = TopSort(fst.get());
 
-  if (!acyclic) LOG(WARNING) << argv[0] << ": Input FST is cyclic";
+  if (!acyclic) FST_LOG(WARNING) << argv[0] << ": Input FST is cyclic";
 
   return !fst->Write(out_name);
 }

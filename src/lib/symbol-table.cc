@@ -43,7 +43,7 @@ SymbolTableImpl *SymbolTableImpl::ReadText(std::istream &strm,
     SplitToVector(line, separator.c_str(), &col, true);
     if (col.empty()) continue;  // Empty line.
     if (col.size() != 2) {
-      LOG(ERROR) << "SymbolTable::ReadText: Bad number of columns ("
+      FST_LOG(ERROR) << "SymbolTable::ReadText: Bad number of columns ("
                  << col.size() << "), "
                  << "file = " << filename << ", line = " << nline << ":<"
                  << line << ">";
@@ -55,7 +55,7 @@ SymbolTableImpl *SymbolTableImpl::ReadText(std::istream &strm,
     const auto key = strtoll(value, &p, 10);
     if (p < value + strlen(value) ||
        (!opts.allow_negative_labels && key < 0) || key == -1) {
-      LOG(ERROR) << "SymbolTable::ReadText: Bad non-negative integer \""
+      FST_LOG(ERROR) << "SymbolTable::ReadText: Bad non-negative integer \""
                  << value << "\", "
                  << "file = " << filename << ", line = " << nline;
       return nullptr;
@@ -109,7 +109,7 @@ int64 SymbolTableImpl::AddSymbol(const string &symbol, int64 key) {
   if (!insert_key.second) {
     auto key_already = GetNthKey(insert_key.first);
     if (key_already == key) return key;
-    VLOG(1) << "SymbolTable::AddSymbol: symbol = " << symbol
+    VFST_LOG(1) << "SymbolTable::AddSymbol: symbol = " << symbol
             << " already in symbol_map_ with key = " << key_already
             << " but supplied new key = " << key << " (ignoring new key)";
     return key_already;
@@ -172,7 +172,7 @@ SymbolTableImpl *SymbolTableImpl::Read(std::istream &strm,
   int32 magic_number = 0;
   ReadType(strm, &magic_number);
   if (strm.fail()) {
-    LOG(ERROR) << "SymbolTable::Read: Read failed";
+    FST_LOG(ERROR) << "SymbolTable::Read: Read failed";
     return nullptr;
   }
   string name;
@@ -182,7 +182,7 @@ SymbolTableImpl *SymbolTableImpl::Read(std::istream &strm,
   int64 size;
   ReadType(strm, &size);
   if (strm.fail()) {
-    LOG(ERROR) << "SymbolTable::Read: Read failed";
+    FST_LOG(ERROR) << "SymbolTable::Read: Read failed";
     return nullptr;
   }
   string symbol;
@@ -192,7 +192,7 @@ SymbolTableImpl *SymbolTableImpl::Read(std::istream &strm,
     ReadType(strm, &symbol);
     ReadType(strm, &key);
     if (strm.fail()) {
-      LOG(ERROR) << "SymbolTable::Read: Read failed";
+      FST_LOG(ERROR) << "SymbolTable::Read: Read failed";
       return nullptr;
     }
     impl->AddSymbol(symbol, key);
@@ -213,7 +213,7 @@ bool SymbolTableImpl::Write(std::ostream &strm) const {
   }
   strm.flush();
   if (strm.fail()) {
-    LOG(ERROR) << "SymbolTable::Write: Write failed";
+    FST_LOG(ERROR) << "SymbolTable::Write: Write failed";
     return false;
   }
   return true;
@@ -233,14 +233,14 @@ void SymbolTable::AddTable(const SymbolTable &table) {
 bool SymbolTable::WriteText(std::ostream &strm,
                             const SymbolTableTextOptions &opts) const {
   if (opts.fst_field_separator.empty()) {
-    LOG(ERROR) << "Missing required field separator";
+    FST_LOG(ERROR) << "Missing required field separator";
     return false;
   }
   bool once_only = false;
   for (SymbolTableIterator iter(*this); !iter.Done(); iter.Next()) {
     std::ostringstream line;
     if (iter.Value() < 0 && !opts.allow_negative_labels && !once_only) {
-      LOG(WARNING) << "Negative symbol table entry when not allowed";
+      FST_LOG(WARNING) << "Negative symbol table entry when not allowed";
       once_only = true;
     }
     line << iter.Symbol() << opts.fst_field_separator[0] << iter.Value()
@@ -340,7 +340,7 @@ bool CompatSymbols(const SymbolTable *syms1, const SymbolTable *syms2,
   if (syms1 && syms2 &&
       (syms1->LabeledCheckSum() != syms2->LabeledCheckSum())) {
     if (warning) {
-      LOG(WARNING) << "CompatSymbols: Symbol table checksums do not match. "
+      FST_LOG(WARNING) << "CompatSymbols: Symbol table checksums do not match. "
                    << "Table sizes are " << syms1->NumSymbols() << " and "
                    << syms2->NumSymbols();
     }

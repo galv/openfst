@@ -106,7 +106,7 @@ template <class Arc>
 void AddVocab(const string &vocab, SymbolTable *isyms, SymbolTable *fsyms,
               SymbolTable *osyms, LinearFstDataBuilder<Arc> *builder) {
   std::ifstream in(vocab);
-  if (!in) LOG(FATAL) << "Can't open file: " << vocab;
+  if (!in) FST_LOG(FATAL) << "Can't open file: " << vocab;
   size_t num_line = 0, num_added = 0;
   std::vector<string> fields;
   std::vector<typename Arc::Label> feature_labels, possible_labels;
@@ -114,7 +114,7 @@ void AddVocab(const string &vocab, SymbolTable *isyms, SymbolTable *fsyms,
   while (GetVocabRecord<Arc>(vocab, in, isyms, fsyms, osyms, &word,
                              &feature_labels, &possible_labels, &num_line)) {
     if (word == kNoLabel) {
-      LOG(WARNING) << "Ignored: boundary word: " << fields[0];
+      FST_LOG(WARNING) << "Ignored: boundary word: " << fields[0];
       continue;
     }
     if (possible_labels.empty())
@@ -122,7 +122,7 @@ void AddVocab(const string &vocab, SymbolTable *isyms, SymbolTable *fsyms,
     else
       num_added += builder->AddWord(word, feature_labels, possible_labels);
   }
-  VLOG(1) << "Read " << num_added << " words in " << num_line << " lines from "
+  VFST_LOG(1) << "Read " << num_added << " words in " << num_line << " lines from "
           << vocab;
 }
 
@@ -131,7 +131,7 @@ void AddVocab(const string &vocab, SymbolTable *isyms, SymbolTable *fsyms,
               SymbolTable *osyms,
               LinearClassifierFstDataBuilder<Arc> *builder) {
   std::ifstream in(vocab);
-  if (!in) LOG(FATAL) << "Can't open file: " << vocab;
+  if (!in) FST_LOG(FATAL) << "Can't open file: " << vocab;
   size_t num_line = 0, num_added = 0;
   std::vector<string> fields;
   std::vector<typename Arc::Label> feature_labels, possible_labels;
@@ -139,15 +139,15 @@ void AddVocab(const string &vocab, SymbolTable *isyms, SymbolTable *fsyms,
   while (GetVocabRecord<Arc>(vocab, in, isyms, fsyms, osyms, &word,
                              &feature_labels, &possible_labels, &num_line)) {
     if (!possible_labels.empty())
-      LOG(FATAL)
+      FST_LOG(FATAL)
           << "Classifier vocabulary should not have possible output constraint";
     if (word == kNoLabel) {
-      LOG(WARNING) << "Ignored: boundary word: " << fields[0];
+      FST_LOG(WARNING) << "Ignored: boundary word: " << fields[0];
       continue;
     }
     num_added += builder->AddWord(word, feature_labels);
   }
-  VLOG(1) << "Read " << num_added << " words in " << num_line << " lines from "
+  VFST_LOG(1) << "Read " << num_added << " words in " << num_line << " lines from "
           << vocab;
 }
 
@@ -166,19 +166,19 @@ template <class Arc>
 void AddModel(const string &model, SymbolTable *fsyms, SymbolTable *osyms,
               LinearFstDataBuilder<Arc> *builder) {
   std::ifstream in(model);
-  if (!in) LOG(FATAL) << "Can't open file: " << model;
+  if (!in) FST_LOG(FATAL) << "Can't open file: " << model;
   string line;
   std::getline(in, line);
-  if (!in) LOG(FATAL) << "Empty file: " << model;
+  if (!in) FST_LOG(FATAL) << "Empty file: " << model;
   size_t future_size;
   {
     std::istringstream strm(line);
     strm >> future_size;
-    if (!strm) LOG(FATAL) << "Can't read future size: " << model;
+    if (!strm) FST_LOG(FATAL) << "Can't read future size: " << model;
   }
   size_t num_line = 1, num_added = 0;
   const int group = builder->AddGroup(future_size);
-  VLOG(1) << "Group " << group << ": from " << model << "; future size is "
+  VFST_LOG(1) << "Group " << group << ": from " << model << "; future size is "
           << future_size << ".";
   // Add the rest of lines as a single feature group
   std::vector<string> fields;
@@ -187,7 +187,7 @@ void AddModel(const string &model, SymbolTable *fsyms, SymbolTable *osyms,
   while (GetModelRecord<Arc>(model, in, fsyms, osyms, &input_labels,
                              &output_labels, &weight, &num_line)) {
     if (output_labels.empty())
-      LOG(FATAL) << "Empty output sequence in source " << model << ", line "
+      FST_LOG(FATAL) << "Empty output sequence in source " << model << ", line "
                  << num_line;
 
     const typename Arc::Label marks[] = {LinearFstData<Arc>::kStartOfSentence,
@@ -210,7 +210,7 @@ void AddModel(const string &model, SymbolTable *fsyms, SymbolTable *osyms,
       }
     }
   }
-  VLOG(1) << "Group " << group << ": read " << num_added << " weight(s) in "
+  VFST_LOG(1) << "Group " << group << ": read " << num_added << " weight(s) in "
           << num_line << " lines.";
 }
 
@@ -218,22 +218,22 @@ template <class Arc>
 void AddModel(const string &model, SymbolTable *fsyms, SymbolTable *osyms,
               LinearClassifierFstDataBuilder<Arc> *builder) {
   std::ifstream in(model);
-  if (!in) LOG(FATAL) << "Can't open file: " << model;
+  if (!in) FST_LOG(FATAL) << "Can't open file: " << model;
   string line;
   std::getline(in, line);
-  if (!in) LOG(FATAL) << "Empty file: " << model;
+  if (!in) FST_LOG(FATAL) << "Empty file: " << model;
   size_t future_size;
   {
     std::istringstream strm(line);
     strm >> future_size;
-    if (!strm) LOG(FATAL) << "Can't read future size: " << model;
+    if (!strm) FST_LOG(FATAL) << "Can't read future size: " << model;
   }
   if (future_size != 0)
-    LOG(FATAL) << "Classifier model must have future size = 0; got "
+    FST_LOG(FATAL) << "Classifier model must have future size = 0; got "
                << future_size << " from " << model;
   size_t num_line = 1, num_added = 0;
   const int group = builder->AddGroup();
-  VLOG(1) << "Group " << group << ": from " << model << "; future size is "
+  VFST_LOG(1) << "Group " << group << ": from " << model << "; future size is "
           << future_size << ".";
   // Add the rest of lines as a single feature group
   std::vector<string> fields;
@@ -242,7 +242,7 @@ void AddModel(const string &model, SymbolTable *fsyms, SymbolTable *osyms,
   while (GetModelRecord<Arc>(model, in, fsyms, osyms, &input_labels,
                              &output_labels, &weight, &num_line)) {
     if (output_labels.size() != 1)
-      LOG(FATAL) << "Output not a single label in source " << model << ", line "
+      FST_LOG(FATAL) << "Output not a single label in source " << model << ", line "
                  << num_line;
 
     const typename Arc::Label marks[] = {LinearFstData<Arc>::kStartOfSentence,
@@ -259,7 +259,7 @@ void AddModel(const string &model, SymbolTable *fsyms, SymbolTable *osyms,
         num_added += builder->AddWeight(group, copy_input, pred, weight);
     }
   }
-  VLOG(1) << "Group " << group << ": read " << num_added << " weight(s) in "
+  VFST_LOG(1) << "Group " << group << ": read " << num_added << " weight(s) in "
           << num_line << " lines.";
 }
 
@@ -286,9 +286,9 @@ void LinearCompileTpl(LinearCompileArgs *args) {
   fsyms.AddSymbol(epsilon_symbol);
   isyms.AddSymbol(unknown_symbol);
 
-  VLOG(1) << "start-of-sentence label is "
+  VFST_LOG(1) << "start-of-sentence label is "
           << LinearFstData<Arc>::kStartOfSentence;
-  VLOG(1) << "end-of-sentence label is " << LinearFstData<Arc>::kEndOfSentence;
+  VFST_LOG(1) << "end-of-sentence label is " << LinearFstData<Arc>::kEndOfSentence;
 
   if (FLAGS_classifier) {
     int num_classes = ScanNumClasses(models, models_length);
@@ -337,7 +337,7 @@ bool GetVocabRecord(const string &vocab, std::istream &strm,  // NOLINT
   std::vector<string> fields;
   SplitByWhitespace(line, &fields);
   if (fields.size() != 3)
-    LOG(FATAL) << "Wrong number of fields in source " << vocab << ", line "
+    FST_LOG(FATAL) << "Wrong number of fields in source " << vocab << ", line "
                << num_line;
 
   feature_labels->clear();
@@ -365,7 +365,7 @@ bool GetModelRecord(const string &model, std::istream &strm,  // NOLINT
   std::vector<string> fields;
   SplitByWhitespace(line, &fields);
   if (fields.size() != 3)
-    LOG(FATAL) << "Wrong number of fields in source " << model << ", line "
+    FST_LOG(FATAL) << "Wrong number of fields in source " << model << ", line "
                << num_line;
 
   input_labels->clear();

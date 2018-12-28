@@ -244,7 +244,7 @@ class Fst {
     const auto &fst_type = hdr.FstType();
     const auto reader = FstRegister<Arc>::GetRegister()->GetReader(fst_type);
     if (!reader) {
-      LOG(ERROR) << "Fst::Read: Unknown FST type " << fst_type
+      FST_LOG(ERROR) << "Fst::Read: Unknown FST type " << fst_type
                  << " (arc type = " << Arc::Type() << "): " << ropts.source;
       return nullptr;
     }
@@ -258,7 +258,7 @@ class Fst {
       std::ifstream strm(filename,
                               std::ios_base::in | std::ios_base::binary);
       if (!strm) {
-        LOG(ERROR) << "Fst::Read: Can't open file: " << filename;
+        FST_LOG(ERROR) << "Fst::Read: Can't open file: " << filename;
         return nullptr;
       }
       return Read(strm, FstReadOptions(filename));
@@ -269,7 +269,7 @@ class Fst {
 
   // Writes an FST to an output stream; returns false on error.
   virtual bool Write(std::ostream &strm, const FstWriteOptions &opts) const {
-    LOG(ERROR) << "Fst::Write: No write stream method for " << Type()
+    FST_LOG(ERROR) << "Fst::Write: No write stream method for " << Type()
                << " FST type";
     return false;
   }
@@ -277,7 +277,7 @@ class Fst {
   // Writes an FST to a file; returns false on error; an empty filename
   // results in writing to standard output.
   virtual bool Write(const string &filename) const {
-    LOG(ERROR) << "Fst::Write: No write filename method for " << Type()
+    FST_LOG(ERROR) << "Fst::Write: No write filename method for " << Type()
                << " FST type";
     return false;
   }
@@ -305,11 +305,11 @@ class Fst {
       std::ofstream strm(filename,
                                std::ios_base::out | std::ios_base::binary);
       if (!strm) {
-        LOG(ERROR) << "Fst::Write: Can't open file: " << filename;
+        FST_LOG(ERROR) << "Fst::Write: Can't open file: " << filename;
         return false;
       }
       bool val = Write(strm, FstWriteOptions(filename));
-      if (!val) LOG(ERROR) << "Fst::Write failed: " << filename;
+      if (!val) FST_LOG(ERROR) << "Fst::Write failed: " << filename;
       return val;
     } else {
       return Write(std::cout, FstWriteOptions("standard output"));
@@ -762,17 +762,17 @@ class FstImpl {
                               FstHeader *hdr, size_t header_offset) {
     strm.seekp(header_offset);
     if (!strm) {
-      LOG(ERROR) << "Fst::UpdateFstHeader: Write failed: " << opts.source;
+      FST_LOG(ERROR) << "Fst::UpdateFstHeader: Write failed: " << opts.source;
       return false;
     }
     WriteFstHeader(fst, strm, opts, version, type, properties, hdr);
     if (!strm) {
-      LOG(ERROR) << "Fst::UpdateFstHeader: Write failed: " << opts.source;
+      FST_LOG(ERROR) << "Fst::UpdateFstHeader: Write failed: " << opts.source;
       return false;
     }
     strm.seekp(0, std::ios_base::end);
     if (!strm) {
-      LOG(ERROR) << "Fst::UpdateFstHeader: Write failed: " << opts.source;
+      FST_LOG(ERROR) << "Fst::UpdateFstHeader: Write failed: " << opts.source;
       return false;
     }
     return true;
@@ -796,24 +796,24 @@ bool FstImpl<Arc>::ReadHeader(std::istream &strm, const FstReadOptions &opts,
     return false;
   }
   if (FLAGS_v >= 2) {
-    LOG(INFO) << "FstImpl::ReadHeader: source: " << opts.source
+    FST_LOG(INFO) << "FstImpl::ReadHeader: source: " << opts.source
               << ", fst_type: " << hdr->FstType()
               << ", arc_type: " << Arc::Type()
               << ", version: " << hdr->Version()
               << ", flags: " << hdr->GetFlags();
   }
   if (hdr->FstType() != type_) {
-    LOG(ERROR) << "FstImpl::ReadHeader: FST not of type " << type_
+    FST_LOG(ERROR) << "FstImpl::ReadHeader: FST not of type " << type_
                << ": " << opts.source;
     return false;
   }
   if (hdr->ArcType() != Arc::Type()) {
-    LOG(ERROR) << "FstImpl::ReadHeader: Arc not of type " << Arc::Type()
+    FST_LOG(ERROR) << "FstImpl::ReadHeader: Arc not of type " << Arc::Type()
                << ": " << opts.source;
     return false;
   }
   if (hdr->Version() < min_version) {
-    LOG(ERROR) << "FstImpl::ReadHeader: Obsolete " << type_
+    FST_LOG(ERROR) << "FstImpl::ReadHeader: Obsolete " << type_
                << " FST version: " << opts.source;
     return false;
   }

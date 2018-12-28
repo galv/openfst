@@ -62,7 +62,7 @@ bool AlignInput(std::istream &strm) {
   for (int i = 0; i < MappedFile::kArchAlignment; ++i) {
     int64 pos = strm.tellg();
     if (pos < 0) {
-      LOG(ERROR) << "AlignInput: Can't determine stream position";
+      FST_LOG(ERROR) << "AlignInput: Can't determine stream position";
       return false;
     }
     if (pos % MappedFile::kArchAlignment == 0) break;
@@ -77,7 +77,7 @@ bool AlignOutput(std::ostream &strm) {
   for (int i = 0; i < MappedFile::kArchAlignment; ++i) {
     int64 pos = strm.tellp();
     if (pos < 0) {
-      LOG(ERROR) << "AlignOutput: Can't determine stream position";
+      FST_LOG(ERROR) << "AlignOutput: Can't determine stream position";
       return false;
     }
     if (pos % MappedFile::kArchAlignment == 0) break;

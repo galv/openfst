@@ -42,13 +42,13 @@ class ExpandedFst : public Fst<A> {
       ropts.header = &hdr;
     }
     if (!(hdr.Properties() & kExpanded)) {
-      LOG(ERROR) << "ExpandedFst::Read: Not an ExpandedFst: " << ropts.source;
+      FST_LOG(ERROR) << "ExpandedFst::Read: Not an ExpandedFst: " << ropts.source;
       return nullptr;
     }
     const auto reader =
         FstRegister<Arc>::GetRegister()->GetReader(hdr.FstType());
     if (!reader) {
-      LOG(ERROR) << "ExpandedFst::Read: Unknown FST type \"" << hdr.FstType()
+      FST_LOG(ERROR) << "ExpandedFst::Read: Unknown FST type \"" << hdr.FstType()
                  << "\" (arc type = \"" << A::Type() << "\"): " << ropts.source;
       return nullptr;
     }
@@ -64,7 +64,7 @@ class ExpandedFst : public Fst<A> {
       std::ifstream strm(filename,
                               std::ios_base::in | std::ios_base::binary);
       if (!strm) {
-        LOG(ERROR) << "ExpandedFst::Read: Can't open file: " << filename;
+        FST_LOG(ERROR) << "ExpandedFst::Read: Can't open file: " << filename;
         return nullptr;
       }
       return Read(strm, FstReadOptions(filename));
@@ -142,7 +142,7 @@ class ImplToExpandedFst : public ImplToFst<Impl, FST> {
       std::ifstream strm(filename,
                               std::ios_base::in | std::ios_base::binary);
       if (!strm) {
-        LOG(ERROR) << "ExpandedFst::Read: Can't open file: " << filename;
+        FST_LOG(ERROR) << "ExpandedFst::Read: Can't open file: " << filename;
         return nullptr;
       }
       return Impl::Read(strm, FstReadOptions(filename));

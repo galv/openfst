@@ -107,9 +107,9 @@ class PdtShortestPathData {
       : gc_(gc), nstates_(0), ngc_(0), finished_(false) {}
 
   ~PdtShortestPathData() {
-    VLOG(1) << "opm size: " << paren_map_.size();
-    VLOG(1) << "# of search states: " << nstates_;
-    if (gc_) VLOG(1) << "# of GC'd search states: " << ngc_;
+    VFST_LOG(1) << "opm size: " << paren_map_.size();
+    VFST_LOG(1) << "# of search states: " << nstates_;
+    if (gc_) VFST_LOG(1) << "# of GC'd search states: " << ngc_;
   }
 
   void Clear() {
@@ -347,9 +347,9 @@ class PdtShortestPath {
   }
 
   ~PdtShortestPath() {
-    VLOG(1) << "# of input states: " << CountStates(*ifst_);
-    VLOG(1) << "# of enqueued: " << nenqueued_;
-    VLOG(1) << "cpmm size: " << close_paren_multimap_.size();
+    VFST_LOG(1) << "# of input states: " << CountStates(*ifst_);
+    VFST_LOG(1) << "# of enqueued: " << nenqueued_;
+    VFST_LOG(1) << "cpmm size: " << close_paren_multimap_.size();
   }
 
   void ShortestPath(MutableFst<Arc> *ofst) {

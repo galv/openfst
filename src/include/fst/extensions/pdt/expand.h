@@ -538,7 +538,7 @@ typename Arc::Weight PdtPrunedExpand<Arc>::DistanceToDest(StateId source,
   const SearchState ss(source + 1, dest + 1);
   const auto distance =
       reverse_shortest_path_->GetShortestPathData().Distance(ss);
-  VLOG(2) << "D(" << source << ", " << dest << ") =" << distance;
+  VFST_LOG(2) << "D(" << source << ", " << dest << ") =" << distance;
   return distance;
 }
 
@@ -626,7 +626,7 @@ void PdtPrunedExpand<Arc>::Relax(StateId s, const Arc &arc, Weight fd) {
   if (less_(fd, FinalDistance(arc.nextstate))) {
     SetFinalDistance(arc.nextstate, fd);
   }
-  VLOG(2) << "Relax: " << s << ", d[s] = " << Distance(s) << ", to "
+  VFST_LOG(2) << "Relax: " << s << ", d[s] = " << Distance(s) << ", to "
           << arc.nextstate << ", d[ns] = " << Distance(arc.nextstate)
           << ", nd = " << nd;
 }
@@ -634,7 +634,7 @@ void PdtPrunedExpand<Arc>::Relax(StateId s, const Arc &arc, Weight fd) {
 // Returns whether the arc out of state s in efst needs pruned.
 template <class Arc>
 bool PdtPrunedExpand<Arc>::PruneArc(StateId s, const Arc &arc) {
-  VLOG(2) << "Prune ?";
+  VFST_LOG(2) << "Prune ?";
   auto fd = Weight::Zero();
   if ((cached_source_ != SourceState(s)) ||
       (cached_stack_id_ != current_stack_id_)) {
@@ -687,7 +687,7 @@ void PdtPrunedExpand<Arc>::ProcStart() {
   SetDistance(s, Weight::One());
   const auto d = DistanceToDest(ifst_->Start(), r);
   SetFinalDistance(s, d);
-  VLOG(2) << d;
+  VFST_LOG(2) << d;
 }
 
 // Makes s final in ofst_ if shortest accepting path ending in s is below
@@ -705,7 +705,7 @@ void PdtPrunedExpand<Arc>::ProcFinal(StateId s) {
 template <class Arc>
 bool PdtPrunedExpand<Arc>::ProcNonParen(StateId s, const Arc &arc,
                                         bool add_arc) {
-  VLOG(2) << "ProcNonParen: " << s << " to " << arc.nextstate << ", "
+  VFST_LOG(2) << "ProcNonParen: " << s << " to " << arc.nextstate << ", "
           << arc.ilabel << ":" << arc.olabel << " / " << arc.weight
           << ", add_arc = " << (add_arc ? "true" : "false");
   if (PruneArc(s, arc)) return false;
@@ -731,7 +731,7 @@ bool PdtPrunedExpand<Arc>::ProcOpenParen(StateId s, const Arc &arc, StackId si,
   while (stack_length_.size() <= nsi) stack_length_.push_back(-1);
   if (stack_length_[nsi] == -1) stack_length_[nsi] = stack_length_[si] + 1;
   const auto ns = arc.nextstate;
-  VLOG(2) << "Open paren: " << s << "(" << state_table_.Tuple(s).state_id
+  VFST_LOG(2) << "Open paren: " << s << "(" << state_table_.Tuple(s).state_id
           << ") to " << ns << "(" << state_table_.Tuple(ns).state_id << ")";
   bool proc_arc = false;
   auto fd = Weight::Zero();
@@ -743,7 +743,7 @@ bool PdtPrunedExpand<Arc>::ProcOpenParen(StateId s, const Arc &arc, StackId si,
     sources.push_front(set_iter.Element());
   }
   for (const auto source : sources) {
-    VLOG(2) << "Close paren source: " << source;
+    VFST_LOG(2) << "Close paren source: " << source;
     const internal::ParenState<Arc> paren_state(paren_id, source);
     for (auto it = close_paren_multimap_.find(paren_state);
          it != close_paren_multimap_.end() && paren_state == it->first; ++it) {
@@ -752,8 +752,8 @@ bool PdtPrunedExpand<Arc>::ProcOpenParen(StateId s, const Arc &arc, StackId si,
       meta_arc.nextstate = state_table_.FindState(tuple);
       const auto state_id = state_table_.Tuple(ns).state_id;
       const auto d = DistanceToDest(state_id, source);
-      VLOG(2) << state_id << ", " << source;
-      VLOG(2) << "Meta arc weight = " << arc.weight << " Times " << d
+      VFST_LOG(2) << state_id << ", " << source;
+      VFST_LOG(2) << "Meta arc weight = " << arc.weight << " Times " << d
               << " Times " << meta_arc.weight;
       meta_arc.weight = Times(arc.weight, Times(d, meta_arc.weight));
       proc_arc |= ProcNonParen(s, meta_arc, false);
@@ -765,7 +765,7 @@ bool PdtPrunedExpand<Arc>::ProcOpenParen(StateId s, const Arc &arc, StackId si,
     }
   }
   if (proc_arc) {
-    VLOG(2) << "Proc open paren " << s << " to " << arc.nextstate;
+    VFST_LOG(2) << "Proc open paren " << s << " to " << arc.nextstate;
     ofst_->AddArc(
         s, keep_parentheses_ ? arc : Arc(0, 0, arc.weight, arc.nextstate));
     AddStateAndEnqueue(arc.nextstate);
@@ -804,7 +804,7 @@ void PdtPrunedExpand<Arc>::ProcDestStates(StateId s, StackId si) {
     dest_map_.clear();
     current_stack_id_ = si;
     current_paren_id_ = stack_.Top(current_stack_id_);
-    VLOG(2) << "StackID " << si << " dequeued for first time";
+    VFST_LOG(2) << "StackID " << si << " dequeued for first time";
   }
   // TODO(allauzen): clean up source state business; rename current function to
   // ProcSourceState.
@@ -827,7 +827,7 @@ void PdtPrunedExpand<Arc>::ProcDestStates(StateId s, StackId si) {
                Times(arc.weight, FinalDistance(state_table_.FindState(tuple))));
     }
     dest_map_[dest_state] = dest_weight;
-    VLOG(2) << "State " << dest_state << " is a dest state for stack ID " << si
+    VFST_LOG(2) << "State " << dest_state << " is a dest state for stack ID " << si
             << " with weight " << dest_weight;
   }
 }
@@ -851,7 +851,7 @@ void PdtPrunedExpand<Arc>::Expand(MutableFst<Arc> *ofst,
     const auto s = queue_.Head();
     queue_.Dequeue();
     SetFlags(s, kExpanded, kExpanded | kEnqueued);
-    VLOG(2) << s << " dequeued!";
+    VFST_LOG(2) << s << " dequeued!";
     ProcFinal(s);
     StackId stack_id = state_table_.Tuple(s).stack_id;
     ProcDestStates(s, stack_id);
@@ -867,7 +867,7 @@ void PdtPrunedExpand<Arc>::Expand(MutableFst<Arc> *ofst,
         ProcCloseParen(s, arc);
       }
     }
-    VLOG(2) << "d[" << s << "] = " << Distance(s) << ", fd[" << s
+    VFST_LOG(2) << "d[" << s << "] = " << Distance(s) << ", fd[" << s
             << "] = " << FinalDistance(s);
   }
 }

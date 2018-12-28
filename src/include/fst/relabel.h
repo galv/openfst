@@ -92,7 +92,7 @@ void Relabel(MutableFst<Arc> *fst,
     if (!unknown_isymbol.empty()) {
       unknown_ilabel = new_isymbols->Find(unknown_isymbol);
       if (unknown_ilabel == kNoLabel) {
-        VLOG(1) << "Input symbol '" << unknown_isymbol
+        VFST_LOG(1) << "Input symbol '" << unknown_isymbol
                 << "' missing from target symbol table";
         ++num_missing_syms;
       }
@@ -107,7 +107,7 @@ void Relabel(MutableFst<Arc> *fst,
         if (unknown_ilabel != kNoLabel) {
           new_index = unknown_ilabel;
         } else {
-          VLOG(1) << "Input symbol ID " << old_index << " symbol '" << symbol
+          VFST_LOG(1) << "Input symbol ID " << old_index << " symbol '" << symbol
                   << "' missing from target symbol table";
           ++num_missing_syms;
         }
@@ -115,7 +115,7 @@ void Relabel(MutableFst<Arc> *fst,
       ipairs.push_back(std::make_pair(old_index, new_index));
     }
     if (num_missing_syms > 0) {
-      LOG(WARNING) << "Target symbol table missing: " << num_missing_syms
+      FST_LOG(WARNING) << "Target symbol table missing: " << num_missing_syms
                    << " input symbols";
     }
     if (attach_new_isymbols) fst->SetInputSymbols(new_isymbols);
@@ -128,7 +128,7 @@ void Relabel(MutableFst<Arc> *fst,
     if (!unknown_osymbol.empty()) {
       unknown_olabel = new_osymbols->Find(unknown_osymbol);
       if (unknown_olabel == kNoLabel) {
-        VLOG(1) << "Output symbol '" << unknown_osymbol
+        VFST_LOG(1) << "Output symbol '" << unknown_osymbol
                 << "' missing from target symbol table";
         ++num_missing_syms;
       }
@@ -143,7 +143,7 @@ void Relabel(MutableFst<Arc> *fst,
         if (unknown_olabel != kNoLabel) {
           new_index = unknown_olabel;
         } else {
-          VLOG(1) << "Output symbol ID " << old_index << " symbol '" << symbol
+          VFST_LOG(1) << "Output symbol ID " << old_index << " symbol '" << symbol
                   << "' missing from target symbol table";
           ++num_missing_syms;
         }
@@ -151,7 +151,7 @@ void Relabel(MutableFst<Arc> *fst,
       opairs.push_back(std::make_pair(old_index, new_index));
     }
     if (num_missing_syms > 0) {
-      LOG(WARNING) << "Target symbol table missing: " << num_missing_syms
+      FST_LOG(WARNING) << "Target symbol table missing: " << num_missing_syms
                    << " output symbols";
     }
     if (attach_new_osymbols) fst->SetOutputSymbols(new_osymbols);

@@ -459,7 +459,7 @@ ComposeFstImpl<CacheStore, Filter, StateTable>::ComposeFstImpl(
   SetInputSymbols(fst1_.InputSymbols());
   SetOutputSymbols(fst2_.OutputSymbols());
   SetMatchType();
-  VLOG(2) << "ComposeFstImpl: Match type: " << match_type_;
+  VFST_LOG(2) << "ComposeFstImpl: Match type: " << match_type_;
   if (match_type_ == MATCH_NONE) SetProperties(kError, kError);
   const auto fprops1 = fst1.Properties(kFstProperties, false);
   const auto fprops2 = fst2.Properties(kFstProperties, false);

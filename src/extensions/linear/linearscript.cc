@@ -68,7 +68,7 @@ int ScanNumClasses(char **models, int models_len) {
   std::set<string> preds;
   for (int i = 0; i < models_len; ++i) {
     std::ifstream in(models[i]);
-    if (!in) LOG(FATAL) << "Failed to open " << models[i];
+    if (!in) FST_LOG(FATAL) << "Failed to open " << models[i];
 
     string line;
     std::getline(in, line);
@@ -79,7 +79,7 @@ int ScanNumClasses(char **models, int models_len) {
       std::vector<string> fields;
       SplitByWhitespace(line, &fields);
       if (fields.size() != 3)
-        LOG(FATAL) << "Wrong number of fields in source " << models[i]
+        FST_LOG(FATAL) << "Wrong number of fields in source " << models[i]
                    << ", line " << num_line;
       preds.insert(fields[1]);
     }

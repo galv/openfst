@@ -42,7 +42,7 @@ bool WeightCompare(Weight w1, Weight w2, float delta, bool *error) {
   auto n2 = q2.Hash();
   // Hash not unique; very unlikely to happen.
   if (n1 == n2 && q1 != q2) {
-    VLOG(1) << "Isomorphic: Weight hash collision";
+    VFST_LOG(1) << "Isomorphic: Weight hash collision";
     *error = true;
   }
   return n1 < n2;
@@ -154,7 +154,7 @@ bool Isomorphism<Arc>::IsIsomorphicState(StateId s1, StateId s2) {
       const auto &arc0 = arcs1_[i - 1];
       if (arc1.ilabel == arc0.ilabel && arc1.olabel == arc0.olabel &&
           ApproxEqual(arc1.weight, arc0.weight, delta_)) {
-        VLOG(1) << "Isomorphic: Non-determinism as an unweighted automaton";
+        VFST_LOG(1) << "Isomorphic: Non-determinism as an unweighted automaton";
         error_ = true;
         return false;
       }

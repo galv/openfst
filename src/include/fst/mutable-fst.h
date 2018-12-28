@@ -106,13 +106,13 @@ class MutableFst : public ExpandedFst<A> {
       ropts.header = &hdr;
     }
     if (!(hdr.Properties() & kMutable)) {
-      LOG(ERROR) << "MutableFst::Read: Not a MutableFst: " << ropts.source;
+      FST_LOG(ERROR) << "MutableFst::Read: Not a MutableFst: " << ropts.source;
       return nullptr;
     }
     const auto &fst_type = hdr.FstType();
     const auto reader = FstRegister<Arc>::GetRegister()->GetReader(fst_type);
     if (!reader) {
-      LOG(ERROR) << "MutableFst::Read: Unknown FST type \"" << fst_type
+      FST_LOG(ERROR) << "MutableFst::Read: Unknown FST type \"" << fst_type
                  << "\" (arc type = \"" << A::Type() << "\"): " << ropts.source;
       return nullptr;
     }
@@ -132,7 +132,7 @@ class MutableFst : public ExpandedFst<A> {
         std::ifstream strm(filename,
                                 std::ios_base::in | std::ios_base::binary);
         if (!strm) {
-          LOG(ERROR) << "MutableFst::Read: Can't open file: " << filename;
+          FST_LOG(ERROR) << "MutableFst::Read: Can't open file: " << filename;
           return nullptr;
         }
         return Read(strm, FstReadOptions(filename));
@@ -149,7 +149,7 @@ class MutableFst : public ExpandedFst<A> {
         ifst.reset();
         if (!ofst) return nullptr;
         if (!ofst->Properties(kMutable, false)) {
-          LOG(ERROR) << "MutableFst: Bad convert type: " << convert_type;
+          FST_LOG(ERROR) << "MutableFst: Bad convert type: " << convert_type;
         }
         return static_cast<MutableFst<Arc> *>(ofst.release());
       }

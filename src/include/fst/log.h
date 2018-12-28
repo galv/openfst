@@ -45,35 +45,35 @@ class LogMessage {
   bool fatal_;
 };
 
-#define LOG(type) LogMessage(#type).stream()
-#define VLOG(level) if ((level) <= FLAGS_v) LOG(INFO)
+#define FST_LOG(type) LogMessage(#type).stream()
+#define VFST_LOG(level) if ((level) <= FLAGS_v) FST_LOG(INFO)
 
 // Checks
 inline void FstCheck(bool x, const char* expr,
                 const char *file, int line) {
   if (!x) {
-    LOG(FATAL) << "Check failed: \"" << expr
+    FST_LOG(FATAL) << "Check failed: \"" << expr
                << "\" file: " << file
                << " line: " << line;
   }
 }
 
-#define CHECK(x) FstCheck(static_cast<bool>(x), #x, __FILE__, __LINE__)
-#define CHECK_EQ(x, y) CHECK((x) == (y))
-#define CHECK_LT(x, y) CHECK((x) < (y))
-#define CHECK_GT(x, y) CHECK((x) > (y))
-#define CHECK_LE(x, y) CHECK((x) <= (y))
-#define CHECK_GE(x, y) CHECK((x) >= (y))
-#define CHECK_NE(x, y) CHECK((x) != (y))
+#define FST_CHECK(x) FstCheck(static_cast<bool>(x), #x, __FILE__, __LINE__)
+#define FST_CHECK_EQ(x, y) FST_CHECK((x) == (y))
+#define FST_CHECK_LT(x, y) FST_CHECK((x) < (y))
+#define FST_CHECK_GT(x, y) FST_CHECK((x) > (y))
+#define FST_CHECK_LE(x, y) FST_CHECK((x) <= (y))
+#define FST_CHECK_GE(x, y) FST_CHECK((x) >= (y))
+#define FST_CHECK_NE(x, y) FST_CHECK((x) != (y))
 
 // Debug checks
-#define DCHECK(x) assert(x)
-#define DCHECK_EQ(x, y) DCHECK((x) == (y))
-#define DCHECK_LT(x, y) DCHECK((x) < (y))
-#define DCHECK_GT(x, y) DCHECK((x) > (y))
-#define DCHECK_LE(x, y) DCHECK((x) <= (y))
-#define DCHECK_GE(x, y) DCHECK((x) >= (y))
-#define DCHECK_NE(x, y) DCHECK((x) != (y))
+#define DFST_CHECK(x) assert(x)
+#define FST_DCHECK_EQ(x, y) DFST_CHECK((x) == (y))
+#define FST_DCHECK_LT(x, y) DFST_CHECK((x) < (y))
+#define FST_DCHECK_GT(x, y) DFST_CHECK((x) > (y))
+#define FST_DCHECK_LE(x, y) DFST_CHECK((x) <= (y))
+#define FST_DCHECK_GE(x, y) DFST_CHECK((x) >= (y))
+#define FST_DCHECK_NE(x, y) DFST_CHECK((x) != (y))
 
 
 // Ports

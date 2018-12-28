@@ -46,7 +46,7 @@ int fstcompile_main(int argc, char **argv) {
   if (argc > 1 && strcmp(argv[1], "-") != 0) {
     fstrm.open(argv[1]);
     if (!fstrm) {
-      LOG(ERROR) << argv[0] << ": Open failed, file = " << argv[1];
+      FST_LOG(ERROR) << argv[0] << ": Open failed, file = " << argv[1];
       return 1;
     }
     source = argv[1];

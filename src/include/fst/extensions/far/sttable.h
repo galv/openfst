@@ -45,7 +45,7 @@ class STTableWriter {
 
   static STTableWriter<T, Writer> *Create(const string &filename) {
     if (filename.empty()) {
-      LOG(ERROR) << "STTableWriter: Writing to standard out unsupported.";
+      FST_LOG(ERROR) << "STTableWriter: Writing to standard out unsupported.";
       return nullptr;
     }
     return new STTableWriter<T, Writer>(filename);
@@ -147,7 +147,7 @@ class STTableReader {
 
   static STTableReader<T, Reader> *Open(const string &filename) {
     if (filename.empty()) {
-      LOG(ERROR) << "STTableReader: Operation not supported on standard input";
+      FST_LOG(ERROR) << "STTableReader: Operation not supported on standard input";
       return nullptr;
     }
     std::vector<string> filenames;
@@ -299,12 +299,12 @@ class STTableReader {
 template <class Header>
 bool ReadSTTableHeader(const string &filename, Header *header) {
   if (filename.empty()) {
-    LOG(ERROR) << "ReadSTTable: Can't read header from standard input";
+    FST_LOG(ERROR) << "ReadSTTable: Can't read header from standard input";
     return false;
   }
   std::ifstream strm(filename, std::ios_base::in | std::ios_base::binary);
   if (!strm) {
-    LOG(ERROR) << "ReadSTTableHeader: Could not open file: " << filename;
+    FST_LOG(ERROR) << "ReadSTTableHeader: Could not open file: " << filename;
     return false;
   }
   int32 magic_number = 0;
@@ -312,18 +312,18 @@ bool ReadSTTableHeader(const string &filename, Header *header) {
   int32 file_version = 0;
   ReadType(strm, &file_version);
   if (magic_number != kSTTableMagicNumber) {
-    LOG(ERROR) << "ReadSTTableHeader: Wrong file type: " << filename;
+    FST_LOG(ERROR) << "ReadSTTableHeader: Wrong file type: " << filename;
     return false;
   }
   if (file_version != kSTTableFileVersion) {
-    LOG(ERROR) << "ReadSTTableHeader: Wrong file version: " << filename;
+    FST_LOG(ERROR) << "ReadSTTableHeader: Wrong file version: " << filename;
     return false;
   }
   int64 i = -1;
   strm.seekg(-static_cast<int>(sizeof(int64)), std::ios_base::end);
   ReadType(strm, &i);  // Reads number of entries
   if (strm.fail()) {
-    LOG(ERROR) << "ReadSTTableHeader: Error reading file: " << filename;
+    FST_LOG(ERROR) << "ReadSTTableHeader: Error reading file: " << filename;
     return false;
   }
   if (i == 0) return true;  // No entry header to read.
@@ -334,7 +334,7 @@ bool ReadSTTableHeader(const string &filename, Header *header) {
   ReadType(strm, &key);
   header->Read(strm, filename + ":" + key);
   if (strm.fail()) {
-    LOG(ERROR) << "ReadSTTableHeader: Error reading file: " << filename;
+    FST_LOG(ERROR) << "ReadSTTableHeader: Error reading file: " << filename;
     return false;
   }
   return true;

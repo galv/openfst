@@ -21,7 +21,7 @@ bool ReadPotentials(const string &weight_type, const string &filename,
                     std::vector<WeightClass> *potentials) {
   std::ifstream istrm(filename);
   if (!istrm.good()) {
-    LOG(ERROR) << "ReadPotentials: Can't open file: " << filename;
+    FST_LOG(ERROR) << "ReadPotentials: Can't open file: " << filename;
     return false;
   }
   static constexpr int kLineLen = 8096;
@@ -55,7 +55,7 @@ bool WritePotentials(const string &filename,
   if (!filename.empty()) {
     ostrm.open(filename);
     if (!ostrm.good()) {
-      LOG(ERROR) << "WritePotentials: Can't open file: " << filename;
+      FST_LOG(ERROR) << "WritePotentials: Can't open file: " << filename;
       return false;
     }
   }
@@ -65,7 +65,7 @@ bool WritePotentials(const string &filename,
     strm << s << "\t" << potentials[s] << "\n";
   }
   if (strm.fail()) {
-    LOG(ERROR) << "WritePotentials: Write failed: "
+    FST_LOG(ERROR) << "WritePotentials: Write failed: "
                << (filename.empty() ? "standard output" : filename);
     return false;
   }

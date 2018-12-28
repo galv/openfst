@@ -32,7 +32,7 @@ bool UTF8StringToLabels(const string &str, std::vector<Label> *labels) {
       labels->push_back(c);
     } else {
       if ((c & 0xc0) == 0x80) {
-        LOG(ERROR) << "UTF8StringToLabels: Continuation byte as lead byte";
+        FST_LOG(ERROR) << "UTF8StringToLabels: Continuation byte as lead byte";
         return false;
       }
       int count =
@@ -40,12 +40,12 @@ bool UTF8StringToLabels(const string &str, std::vector<Label> *labels) {
       int32 code = c & ((1 << (6 - count)) - 1);
       while (count != 0) {
         if (i == length) {
-          LOG(ERROR) << "UTF8StringToLabels: Truncated UTF-8 byte sequence";
+          FST_LOG(ERROR) << "UTF8StringToLabels: Truncated UTF-8 byte sequence";
           return false;
         }
         char cb = data[i++];
         if ((cb & 0xc0) != 0x80) {
-          LOG(ERROR) << "UTF8StringToLabels: Missing/invalid continuation byte";
+          FST_LOG(ERROR) << "UTF8StringToLabels: Missing/invalid continuation byte";
           return false;
         }
         code = (code << 6) | (cb & 0x3f);
@@ -53,7 +53,7 @@ bool UTF8StringToLabels(const string &str, std::vector<Label> *labels) {
       }
       if (code < 0) {
         // Should be unreachable.
-        LOG(ERROR) << "UTF8StringToLabels: Invalid character found: " << c;
+        FST_LOG(ERROR) << "UTF8StringToLabels: Invalid character found: " << c;
         return false;
       }
       labels->push_back(code);
@@ -68,7 +68,7 @@ bool LabelsToUTF8String(const std::vector<Label> &labels, string *str) {
   for (size_t i = 0; i < labels.size(); ++i) {
     int32 code = labels[i];
     if (code < 0) {
-      LOG(ERROR) << "LabelsToUTF8String: Invalid character found: " << code;
+      FST_LOG(ERROR) << "LabelsToUTF8String: Invalid character found: " << code;
       return false;
     } else if (code < 0x80) {
       ostr << static_cast<char>(code);

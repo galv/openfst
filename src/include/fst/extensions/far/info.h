@@ -54,7 +54,7 @@ void GetFarInfo(const std::vector<string> &filenames, const string &begin_key,
   *far_info = FarInfoData();
   std::unique_ptr<FarReader<Arc>> reader(FarReader<Arc>::Open(filenames));
   if (!reader) {
-    LOG(ERROR) << "GetFarInfo: failed to create far reader.";
+    FST_LOG(ERROR) << "GetFarInfo: failed to create far reader.";
     return;
   }
   if (!begin_key.empty()) reader->Find(begin_key);

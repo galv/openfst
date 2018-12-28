@@ -394,7 +394,7 @@ DefaultCompactStore<Element, Unsigned>
   data->narcs_ = hdr.NumArcs();
   if (compactor.Size() == -1) {
     if ((hdr.GetFlags() & FstHeader::IS_ALIGNED) && !AlignInput(strm)) {
-      LOG(ERROR) << "DefaultCompactStore::Read: Alignment failed: "
+      FST_LOG(ERROR) << "DefaultCompactStore::Read: Alignment failed: "
                  << opts.source;
       return nullptr;
     }
@@ -402,7 +402,7 @@ DefaultCompactStore<Element, Unsigned>
     data->states_region_.reset(MappedFile::Map(
         &strm, opts.mode == FstReadOptions::MAP, opts.source, b));
     if (!strm || !data->states_region_) {
-      LOG(ERROR) << "DefaultCompactStore::Read: Read failed: " << opts.source;
+      FST_LOG(ERROR) << "DefaultCompactStore::Read: Read failed: " << opts.source;
       return nullptr;
     }
     data->states_ =
@@ -413,7 +413,7 @@ DefaultCompactStore<Element, Unsigned>
   data->ncompacts_ = compactor.Size() == -1 ? data->states_[data->nstates_]
                                             : data->nstates_ * compactor.Size();
   if ((hdr.GetFlags() & FstHeader::IS_ALIGNED) && !AlignInput(strm)) {
-    LOG(ERROR) << "DefaultCompactStore::Read: Alignment failed: "
+    FST_LOG(ERROR) << "DefaultCompactStore::Read: Alignment failed: "
                << opts.source;
     return nullptr;
   }
@@ -421,7 +421,7 @@ DefaultCompactStore<Element, Unsigned>
   data->compacts_region_.reset(
       MappedFile::Map(&strm, opts.mode == FstReadOptions::MAP, opts.source, b));
   if (!strm || !data->compacts_region_) {
-    LOG(ERROR) << "DefaultCompactStore::Read: Read failed: " << opts.source;
+    FST_LOG(ERROR) << "DefaultCompactStore::Read: Read failed: " << opts.source;
     return nullptr;
   }
   data->compacts_ =
@@ -434,7 +434,7 @@ bool DefaultCompactStore<Element, Unsigned>::Write(
     std::ostream &strm, const FstWriteOptions &opts) const {
   if (states_) {
     if (opts.align && !AlignOutput(strm)) {
-      LOG(ERROR) << "DefaultCompactStore::Write: Alignment failed: "
+      FST_LOG(ERROR) << "DefaultCompactStore::Write: Alignment failed: "
                  << opts.source;
       return false;
     }
@@ -442,14 +442,14 @@ bool DefaultCompactStore<Element, Unsigned>::Write(
                (nstates_ + 1) * sizeof(Unsigned));
   }
   if (opts.align && !AlignOutput(strm)) {
-    LOG(ERROR) << "DefaultCompactStore::Write: Alignment failed: "
+    FST_LOG(ERROR) << "DefaultCompactStore::Write: Alignment failed: "
                << opts.source;
     return false;
   }
   strm.write(reinterpret_cast<char *>(compacts_), ncompacts_ * sizeof(Element));
   strm.flush();
   if (!strm) {
-    LOG(ERROR) << "DefaultCompactStore::Write: Write failed: " << opts.source;
+    FST_LOG(ERROR) << "DefaultCompactStore::Write: Write failed: " << opts.source;
     return false;
   }
   return true;
@@ -1215,7 +1215,7 @@ bool CompactFst<A, ArcCompactor, Unsigned, CompactStore, CacheStore>::WriteFst(
   first_pass_compactor.Write(strm);
   if (first_pass_compactor.Size() == -1) {
     if (opts.align && !AlignOutput(strm)) {
-      LOG(ERROR) << "CompactFst::Write: Alignment failed: " << opts.source;
+      FST_LOG(ERROR) << "CompactFst::Write: Alignment failed: " << opts.source;
       return false;
     }
     Unsigned compacts = 0;
@@ -1230,7 +1230,7 @@ bool CompactFst<A, ArcCompactor, Unsigned, CompactStore, CacheStore>::WriteFst(
     strm.write(reinterpret_cast<const char *>(&compacts), sizeof(compacts));
   }
   if (opts.align && !AlignOutput(strm)) {
-    LOG(ERROR) << "Could not align file during write after writing states";
+    FST_LOG(ERROR) << "Could not align file during write after writing states";
   }
   const auto &second_pass_compactor = compactor;
   Element element;
@@ -1248,7 +1248,7 @@ bool CompactFst<A, ArcCompactor, Unsigned, CompactStore, CacheStore>::WriteFst(
   }
   strm.flush();
   if (!strm) {
-    LOG(ERROR) << "CompactFst write failed: " << opts.source;
+    FST_LOG(ERROR) << "CompactFst write failed: " << opts.source;
     return false;
   }
   return true;

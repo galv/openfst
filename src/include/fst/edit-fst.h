@@ -81,7 +81,7 @@ class EditFstData {
     WriteType(strm, edited_final_weights_);
     WriteType(strm, num_new_states_);
     if (!strm) {
-      LOG(ERROR) << "EditFstData::Write: Write failed: " << opts.source;
+      FST_LOG(ERROR) << "EditFstData::Write: Write failed: " << opts.source;
       return false;
     }
     return true;
@@ -193,11 +193,11 @@ class EditFstData {
                        const WrappedFstT *wrapped) const {
     auto id_map_it = GetEditedIdMapIterator(s);
     if (id_map_it == NotInEditedMap()) {
-      VLOG(3) << "EditFstData::InitArcIterator: iterating on state " << s
+      VFST_LOG(3) << "EditFstData::InitArcIterator: iterating on state " << s
               << " of original fst";
       wrapped->InitArcIterator(s, data);
     } else {
-      VLOG(2) << "EditFstData::InitArcIterator: iterating on edited state " << s
+      VFST_LOG(2) << "EditFstData::InitArcIterator: iterating on edited state " << s
               << " (internal state id: " << id_map_it->second << ")";
       edits_.InitArcIterator(id_map_it->second, data);
     }
@@ -215,7 +215,7 @@ class EditFstData {
   void PrintMap() {
     for (auto map_it = external_to_internal_ids_.begin();
          map_it != NotInEditedMap(); ++map_it) {
-      LOG(INFO) << "(external,internal)=(" << map_it->first << ","
+      FST_LOG(INFO) << "(external,internal)=(" << map_it->first << ","
                 << map_it->second << ")";
     }
   }
@@ -250,7 +250,7 @@ class EditFstData {
     auto id_map_it = GetEditedIdMapIterator(s);
     if (id_map_it == NotInEditedMap()) {
       StateId new_internal_id = edits_.AddState();
-      VLOG(2) << "EditFstData::GetEditableInternalId: editing state " << s
+      VFST_LOG(2) << "EditFstData::GetEditableInternalId: editing state " << s
               << " of original fst; new internal state id:" << new_internal_id;
       external_to_internal_ids_[s] = new_internal_id;
       for (ArcIterator<Fst<Arc>> arc_iterator(*wrapped, s);
@@ -316,7 +316,7 @@ EditFstData<A, WrappedFstT, MutableFstT>::Read(std::istream &strm,
   ReadType(strm, &data->edited_final_weights_);
   ReadType(strm, &data->num_new_states_);
   if (!strm) {
-    LOG(ERROR) << "EditFst::Read: read failed: " << opts.source;
+    FST_LOG(ERROR) << "EditFst::Read: read failed: " << opts.source;
     return nullptr;
   }
   return data;
@@ -439,7 +439,7 @@ class EditFstImpl : public FstImpl<A> {
     data_->Write(strm, opts);
     strm.flush();
     if (!strm) {
-      LOG(ERROR) << "EditFst::Write: Write failed: " << opts.source;
+      FST_LOG(ERROR) << "EditFst::Write: Write failed: " << opts.source;
       return false;
     }
     return true;

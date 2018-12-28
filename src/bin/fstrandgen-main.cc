@@ -36,7 +36,7 @@ int fstrandgen_main(int argc, char **argv) {
     return 1;
   }
 
-  VLOG(1) << argv[0] << ": Seed = " << FLAGS_seed;
+  VFST_LOG(1) << argv[0] << ": Seed = " << FLAGS_seed;
 
   const string in_name = (argc > 1 && strcmp(argv[1], "-") != 0) ? argv[1] : "";
   const string out_name = argc > 2 ? argv[2] : "";
@@ -48,7 +48,7 @@ int fstrandgen_main(int argc, char **argv) {
 
   s::RandArcSelection ras;
   if (!s::GetRandArcSelection(FLAGS_select, &ras)) {
-    LOG(ERROR) << argv[0] << ": Unknown or unsupported select type "
+    FST_LOG(ERROR) << argv[0] << ": Unknown or unsupported select type "
                << FLAGS_select;
     return 1;
   }

@@ -532,13 +532,13 @@ class AutoQueue final : public QueueBase<S> {
         fst.Properties(kAcyclic | kCyclic | kTopSorted | kUnweighted, false);
     if ((props & kTopSorted) || fst.Start() == kNoStateId) {
       queue_.reset(new StateOrderQueue<StateId>());
-      VLOG(2) << "AutoQueue: using state-order discipline";
+      VFST_LOG(2) << "AutoQueue: using state-order discipline";
     } else if (props & kAcyclic) {
       queue_.reset(new TopOrderQueue<StateId>(fst, filter));
-      VLOG(2) << "AutoQueue: using top-order discipline";
+      VFST_LOG(2) << "AutoQueue: using top-order discipline";
     } else if ((props & kUnweighted) && (Weight::Properties() & kIdempotent)) {
       queue_.reset(new LifoQueue<StateId>());
-      VLOG(2) << "AutoQueue: using LIFO discipline";
+      VFST_LOG(2) << "AutoQueue: using LIFO discipline";
     } else {
       uint64 properties;
       // Decomposes into strongly-connected components.
@@ -560,38 +560,38 @@ class AutoQueue final : public QueueBase<S> {
       // If unweighted and semiring is idempotent, uses LIFO queue.
       if (unweighted) {
         queue_.reset(new LifoQueue<StateId>());
-        VLOG(2) << "AutoQueue: using LIFO discipline";
+        VFST_LOG(2) << "AutoQueue: using LIFO discipline";
         return;
       }
       // If all the SCC are trivial, the FST is acyclic and the scc number gives
       // the topological order.
       if (all_trivial) {
         queue_.reset(new TopOrderQueue<StateId>(scc_));
-        VLOG(2) << "AutoQueue: using top-order discipline";
+        VFST_LOG(2) << "AutoQueue: using top-order discipline";
         return;
       }
-      VLOG(2) << "AutoQueue: using SCC meta-discipline";
+      VFST_LOG(2) << "AutoQueue: using SCC meta-discipline";
       queues_.resize(nscc);
       for (StateId i = 0; i < nscc; ++i) {
         switch (queue_types[i]) {
           case TRIVIAL_QUEUE:
             queues_[i].reset();
-            VLOG(3) << "AutoQueue: SCC #" << i << ": using trivial discipline";
+            VFST_LOG(3) << "AutoQueue: SCC #" << i << ": using trivial discipline";
             break;
           case SHORTEST_FIRST_QUEUE:
             queues_[i].reset(
                 new ShortestFirstQueue<StateId, Compare, false>(*comp));
-            VLOG(3) << "AutoQueue: SCC #" << i
+            VFST_LOG(3) << "AutoQueue: SCC #" << i
                     << ": using shortest-first discipline";
             break;
           case LIFO_QUEUE:
             queues_[i].reset(new LifoQueue<StateId>());
-            VLOG(3) << "AutoQueue: SCC #" << i << ": using LIFO discipline";
+            VFST_LOG(3) << "AutoQueue: SCC #" << i << ": using LIFO discipline";
             break;
           case FIFO_QUEUE:
           default:
             queues_[i].reset(new FifoQueue<StateId>());
-            VLOG(3) << "AutoQueue: SCC #" << i << ": using FIFO discipine";
+            VFST_LOG(3) << "AutoQueue: SCC #" << i << ": using FIFO discipine";
             break;
         }
       }

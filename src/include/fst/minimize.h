@@ -174,7 +174,7 @@ class CyclicMinimizer {
   // Note: for the O(n) guarantees we don't rely on the goodness of this
   // hashing function---it just provides a bonus speedup.
   void PrePartition(const ExpandedFst<Arc> &fst) {
-    VLOG(5) << "PrePartition";
+    VFST_LOG(5) << "PrePartition";
     StateId next_class = 0;
     auto num_states = fst.NumStates();
     // Allocates a temporary vector to store the initial class mappings, so that
@@ -206,7 +206,7 @@ class CyclicMinimizer {
       P_.Add(s, state_to_initial_class[s]);
     }
     for (StateId c = 0; c < next_class; ++c) L_.Enqueue(c);
-    VLOG(5) << "Initial Partition: " << P_.NumClasses();
+    VFST_LOG(5) << "Initial Partition: " << P_.NumClasses();
   }
 
   // Creates inverse transition Tr_ = rev(fst), loops over states in FST and
@@ -459,7 +459,7 @@ void AcceptorMinimize(MutableFst<Arc> *fst,
   if (fst->NumStates() == 0) return;
   if (allow_acyclic_minimization && fst->Properties(kAcyclic, true)) {
     // Acyclic minimization (Revuz).
-    VLOG(2) << "Acyclic minimization";
+    VFST_LOG(2) << "Acyclic minimization";
     ArcSort(fst, ILabelCompare<Arc>());
     AcyclicMinimizer<Arc> minimizer(*fst);
     MergeStates(minimizer.GetPartition(), fst);
@@ -467,7 +467,7 @@ void AcceptorMinimize(MutableFst<Arc> *fst,
     // Either the FST has cycles, or it's generated from non-deterministic input
     // (which the Revuz algorithm can't handle), so use the cyclic minimization
     // algorithm of Hopcroft.
-    VLOG(2) << "Cyclic minimization";
+    VFST_LOG(2) << "Cyclic minimization";
     CyclicMinimizer<Arc, LifoQueue<typename Arc::StateId>> minimizer(*fst);
     MergeStates(minimizer.GetPartition(), fst);
   }

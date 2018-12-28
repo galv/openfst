@@ -39,7 +39,7 @@ bool ConvertSymbolToLabel(const char *str, const SymbolTable *syms,
     n = syms->Find(str);
     if ((n == -1) && (unknown_label != kNoLabel)) n = unknown_label;
     if (n == -1 || (!allow_negative && n < 0)) {
-      VLOG(1) << "ConvertSymbolToLabel: Symbol \"" << str
+      VFST_LOG(1) << "ConvertSymbolToLabel: Symbol \"" << str
               << "\" is not mapped to any integer label, symbol table = "
               << syms->Name();
       return false;
@@ -48,7 +48,7 @@ bool ConvertSymbolToLabel(const char *str, const SymbolTable *syms,
     char *p;
     n = strtoll(str, &p, 10);
     if (p < str + strlen(str) || (!allow_negative && n < 0)) {
-      VLOG(1) << "ConvertSymbolToLabel: Bad label integer "
+      VFST_LOG(1) << "ConvertSymbolToLabel: Bad label integer "
               << "= \"" << str << "\"";
       return false;
     }
@@ -184,7 +184,7 @@ class StringPrinter {
   // Converts the FST into a string.
   bool operator()(const Fst<Arc> &fst, string *result) {
     if (!FstToLabels(fst)) {
-      VLOG(1) << "StringPrinter::operator(): FST is not a string";
+      VFST_LOG(1) << "StringPrinter::operator(): FST is not a string";
       return false;
     }
     result->clear();
@@ -201,7 +201,7 @@ class StringPrinter {
     } else if (token_type_ == StringTokenType::UTF8) {
       return LabelsToUTF8String(labels_, result);
     } else {
-      VLOG(1) << "StringPrinter::operator(): Unknown token type: "
+      VFST_LOG(1) << "StringPrinter::operator(): Unknown token type: "
               << token_type_;
       return false;
     }
@@ -213,14 +213,14 @@ class StringPrinter {
     labels_.clear();
     auto s = fst.Start();
     if (s == kNoStateId) {
-      VLOG(2) << "StringPrinter::FstToLabels: Invalid starting state for "
+      VFST_LOG(2) << "StringPrinter::FstToLabels: Invalid starting state for "
               << "string FST";
       return false;
     }
     while (fst.Final(s) == Weight::Zero()) {
       ArcIterator<Fst<Arc>> aiter(fst, s);
       if (aiter.Done()) {
-        VLOG(2) << "StringPrinter::FstToLabels: String FST traversal does "
+        VFST_LOG(2) << "StringPrinter::FstToLabels: String FST traversal does "
                 << "not reach final state";
         return false;
       }
@@ -228,12 +228,12 @@ class StringPrinter {
       labels_.push_back(arc.olabel);
       s = arc.nextstate;
       if (s == kNoStateId) {
-        VLOG(2) << "StringPrinter::FstToLabels: Transition to invalid state";
+        VFST_LOG(2) << "StringPrinter::FstToLabels: Transition to invalid state";
         return false;
       }
       aiter.Next();
       if (!aiter.Done()) {
-        VLOG(2) << "StringPrinter::FstToLabels: State with multiple "
+        VFST_LOG(2) << "StringPrinter::FstToLabels: State with multiple "
                 << "outgoing arcs found";
         return false;
       }
@@ -245,7 +245,7 @@ class StringPrinter {
     if (syms_) {
       const auto symbol = syms_->Find(label);
       if (symbol == "") {
-        VLOG(2) << "StringPrinter::PrintLabel: Integer " << label << " is not "
+        VFST_LOG(2) << "StringPrinter::PrintLabel: Integer " << label << " is not "
                 << "mapped to any textual symbol, symbol table = "
                 << syms_->Name();
         return false;
