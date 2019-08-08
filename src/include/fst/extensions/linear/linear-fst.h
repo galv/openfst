@@ -291,7 +291,7 @@ template <class A>
 inline typename A::Label LinearTaggerFstImpl<A>::ShiftBuffer(
     const std::vector<Label> &state, Label ilabel,
     std::vector<Label> *next_stub_) {
-  DFST_CHECK(ilabel > 0 || ilabel == LinearFstData<A>::kEndOfSentence);
+  FST_DCHECK(ilabel > 0 || ilabel == LinearFstData<A>::kEndOfSentence);
   if (delay_ == 0) {
     FST_DCHECK_GT(ilabel, 0);
     return ilabel;
@@ -305,8 +305,8 @@ template <class A>
 inline A LinearTaggerFstImpl<A>::MakeArc(const std::vector<Label> &state,
                                          Label ilabel, Label olabel,
                                          std::vector<Label> *next_stub_) {
-  DFST_CHECK(ilabel > 0 || ilabel == LinearFstData<A>::kEndOfSentence);
-  DFST_CHECK(olabel > 0 || olabel == LinearFstData<A>::kStartOfSentence);
+  FST_DCHECK(ilabel > 0 || ilabel == LinearFstData<A>::kEndOfSentence);
+  FST_DCHECK(olabel > 0 || olabel == LinearFstData<A>::kStartOfSentence);
   Weight weight(Weight::One());
   data_->TakeTransition(BufferEnd(state), InternalBegin(state),
                         InternalEnd(state), ilabel, olabel, next_stub_,

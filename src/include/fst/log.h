@@ -67,13 +67,13 @@ inline void FstCheck(bool x, const char* expr,
 #define FST_CHECK_NE(x, y) FST_CHECK((x) != (y))
 
 // Debug checks
-#define DFST_CHECK(x) assert(x)
-#define FST_DCHECK_EQ(x, y) DFST_CHECK((x) == (y))
-#define FST_DCHECK_LT(x, y) DFST_CHECK((x) < (y))
-#define FST_DCHECK_GT(x, y) DFST_CHECK((x) > (y))
-#define FST_DCHECK_LE(x, y) DFST_CHECK((x) <= (y))
-#define FST_DCHECK_GE(x, y) DFST_CHECK((x) >= (y))
-#define FST_DCHECK_NE(x, y) DFST_CHECK((x) != (y))
+#define FST_DCHECK(x) assert(x)
+#define FST_DCHECK_EQ(x, y) FST_DCHECK((x) == (y))
+#define FST_DCHECK_LT(x, y) FST_DCHECK((x) < (y))
+#define FST_DCHECK_GT(x, y) FST_DCHECK((x) > (y))
+#define FST_DCHECK_LE(x, y) FST_DCHECK((x) <= (y))
+#define FST_DCHECK_GE(x, y) FST_DCHECK((x) >= (y))
+#define FST_DCHECK_NE(x, y) FST_DCHECK((x) != (y))
 
 
 // Ports

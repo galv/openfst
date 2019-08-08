@@ -377,7 +377,7 @@ namespace internal {
 
 // -log(e^-x + e^-y) = x - LogPosExp(y - x), assuming x >= 0.0.
 inline double LogPosExp(double x) {
-  DFST_CHECK(!(x < 0));  // NB: NaN values are allowed.
+  FST_DCHECK(!(x < 0));  // NB: NaN values are allowed.
   return log1p(exp(-x));
 }
 

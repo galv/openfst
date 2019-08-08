@@ -773,7 +773,7 @@ bool FeatureGroupBuilder<A>::AddWeight(const std::vector<Label> &input,
          --pad, ++opos)
       cur = trie_.Insert(cur, InputOutputLabel(kNoLabel, output[opos]));
   }
-  FST_CHECK_EQ(iend - ipos, oend - opos);
+  FST_DCHECK_EQ(iend - ipos, oend - opos);
   for (; ipos != iend; ++ipos, ++opos)
     cur = trie_.Insert(cur, InputOutputLabel(input[ipos], output[opos]));
   // We only need to attach final weight when there is an output

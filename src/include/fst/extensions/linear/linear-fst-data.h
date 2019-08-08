@@ -151,8 +151,8 @@ void LinearFstData<A>::TakeTransition(Iterator buffer_end,
                                       Label olabel, std::vector<Label> *next,
                                       Weight *weight) const {
   FST_DCHECK_EQ(trie_state_end - trie_state_begin, groups_.size());
-  DFST_CHECK(ilabel > 0 || ilabel == kEndOfSentence);
-  DFST_CHECK(olabel > 0 || olabel == kStartOfSentence);
+  FST_DCHECK(ilabel > 0 || ilabel == kEndOfSentence);
+  FST_DCHECK(olabel > 0 || olabel == kStartOfSentence);
   size_t group_id = 0;
   for (Iterator it = trie_state_begin; it != trie_state_end; ++it, ++group_id) {
     size_t delay = groups_[group_id]->Delay();
@@ -242,7 +242,7 @@ inline std::ostream &LinearFstData<A>::Write(
 template <class A>
 typename A::Label LinearFstData<A>::FindFeature(size_t group,
                                                 Label word) const {
-  DFST_CHECK(word > 0 || word == kStartOfSentence || word == kEndOfSentence);
+  FST_DCHECK(word > 0 || word == kStartOfSentence || word == kEndOfSentence);
   if (word == kStartOfSentence || word == kEndOfSentence)
     return word;
   else
